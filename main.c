@@ -8,6 +8,11 @@
 typedef struct {
   float x;
   float y;
+  float velX;
+  float velY;
+  int dirX;
+  int dirY;  
+
   int heigth;
   int width;
 
@@ -27,7 +32,6 @@ typedef struct {
   ALLEGRO_BITMAP *image = NULL;
   ALLEGRO_TIMER *timer;
 
-
 void init();
 
 void main(int argc, int **argv){
@@ -37,42 +41,68 @@ void main(int argc, int **argv){
   Sprite homura;
   homura.x = 0;
   homura.y = 400;
-  homura.maxFrame = 8;
-  homura.curFrame = 0;
   homura.heigth = 128;
   homura.width = 108;
+
+  homura.velX = 2;
+  homura.dirX = 0;
+  homura.dirY = 0;
+
+  homura.maxFrame = 8;
+  homura.curFrame = 0;
+  homura.animationDirection = 0;
   homura.frameCount = 0;
   homura.frameDelay = 5;
   homura.animationColumns = 8;
   homura.image = al_load_bitmap("imgs/sprites/running/homura_running_by_konbe.bmp");
   al_convert_mask_to_alpha(homura.image, al_map_rgb(0, 255, 38));
 
-  while (1) {
+  bool done = false;
+
+  while (!done) {
     ALLEGRO_EVENT event;
     ALLEGRO_TIMEOUT timeout;
-    al_init_timeout(&timeout, 0.01);
-
-    int has_events = al_wait_for_event_until(event_queue, &event, &timeout);
+    
+    al_wait_for_event(event_queue, &event);
 
     if (event.type == ALLEGRO_EVENT_DISPLAY_CLOSE) {
         break;
     }
 
-    if(event.type == ALLEGRO_EVENT_TIMER) {
-      if(++homura.frameCount >= homura.frameDelay)
-      {
+    if (event.type == ALLEGRO_EVENT_KEY_DOWN) {
+      switch (event.keyboard.keycode){
+        case ALLEGRO_KEY_ESCAPE:
+          done = true;
+        break;
+        case ALLEGRO_KEY_LEFT:
+          homura.animationDirection = ALLEGRO_FLIP_HORIZONTAL;
+          homura.dirX = -1;
+        break;
+        case ALLEGRO_KEY_RIGHT:
+          homura.animationDirection = 0;
+          homura.dirX = 1;
+        break;
+      }
+    } else if(event.type == ALLEGRO_EVENT_TIMER) {
+
+      if(++homura.frameCount >= homura.frameDelay) {
         if(++homura.curFrame >= homura.maxFrame)
-        homura.curFrame = 0;
+          homura.curFrame = 0;
+        else if (homura.curFrame <= 0)
+          homura.curFrame = homura.maxFrame - 1; 
+
         homura.frameCount = 0;
       }
 
-      homura.x += 2;
+      homura.x += homura.velX * homura.dirX;
 
-      if(homura.x > HEIGHT)
-        homura.x = 20;
+      if(homura.x >= HEIGHT - 128)
+        homura.x = HEIGHT - 128;
+      else if (homura.x <= 0)
+        homura.x = 0;
     }
 
-    al_draw_bitmap_region(homura.image, homura.curFrame * homura.width, 0, homura.width, homura.heigth, homura.x, homura.y, 0);
+    al_draw_bitmap_region(homura.image, homura.curFrame * homura.width, 0, homura.width, homura.heigth, homura.x, homura.y, homura.animationDirection);
     al_flip_display();
     al_draw_bitmap(background, 0, 0, 0);
   }
