@@ -33,7 +33,7 @@ void main(int argc, int **argv){
   homura.running.maxFrame = 7;
   homura.running.curFrame = 0;
   homura.running.frameCount = 0;
-  homura.running.frameDelay = 5;
+  homura.running.frameDelay = 4;
   homura.running.animationColumns = 8;
 
   homura.running.image = al_load_bitmap("imgs/sprites/running/homura_running_by_konbe.bmp");
@@ -127,7 +127,7 @@ void init(){
 
   event_queue = al_create_event_queue();
 
-  timer = al_create_timer(1.0 / 60);
+  timer = al_create_timer(1.0 / 40);
   al_start_timer(timer);
 
   al_set_window_title(display, "｡＾･ｪ･＾｡");
