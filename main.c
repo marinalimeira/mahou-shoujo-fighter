@@ -1,6 +1,8 @@
 #include <stdio.h>
 #include <allegro5/allegro.h>
 #include <allegro5/allegro_image.h>
+#include <allegro5/allegro_audio.h>
+#include <allegro5/allegro_acodec.h>
 #include "character.h"
 
 #define HEIGHT 900
@@ -10,6 +12,7 @@ ALLEGRO_DISPLAY *display = NULL;
 ALLEGRO_BITMAP *background = NULL;
 ALLEGRO_EVENT_QUEUE *event_queue = NULL;
 ALLEGRO_TIMER *timer = NULL;
+ALLEGRO_SAMPLE *main_song = NULL;
 
 void init();
 void moveCharacterLeft(Character *c);
@@ -105,9 +108,9 @@ void main(int argc, int **argv){
     al_draw_bitmap(background, 0, 0, 0);
   }
 
+  al_destroy_sample(main_song);
   al_destroy_event_queue(event_queue);
-  al_destroy_display(display);
-  
+  al_destroy_display(display);  
 }
 
 void init(){
@@ -124,6 +127,18 @@ void init(){
   al_draw_bitmap(background, 0, 0, 0);
 
   if (!background ? printf("Fail to load background.\n") : 0);
+
+  if(!al_install_audio() ? printf("Failed to initialize audio!\n") : 0);
+
+  if(!al_init_acodec_addon() ? printf("Failed to initialize audio codecs!\n") : 0);
+
+  // change this if increase the number of audio file
+  if (!al_reserve_samples(1) ? printf("Failed to reserve samples!\n") : 0);
+
+  main_song = al_load_sample( "audio/that_persons_name_is_by_Jacobus21.ogg" );
+  if (!main_song ? printf("Background music not loaded!\n") : 0);
+
+  al_play_sample(main_song, 1.0, 0.0, 1.0, ALLEGRO_PLAYMODE_LOOP, NULL);
 
   event_queue = al_create_event_queue();
 
