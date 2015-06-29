@@ -7,6 +7,7 @@
 
 #define HEIGHT 900
 #define WIDTH 600
+#define FPS 20
 
 ALLEGRO_DISPLAY *display = NULL;
 ALLEGRO_BITMAP *background = NULL;
@@ -17,17 +18,25 @@ ALLEGRO_SAMPLE *main_song = NULL;
 void init();
 void moveCharacterLeft(Character *c);
 void moveCharacterRight(Character *c);
+void makeAttack1(Character *c);
+void makeAttack2(Character *c);
 
 void main(int argc, int **argv){
 
   init();
 
   Character homura;
+
+  homura.leftKey = ALLEGRO_KEY_LEFT;
+  homura.rightKey = ALLEGRO_KEY_RIGHT;
+  homura.attack1Key = ALLEGRO_KEY_UP;
+  homura.attack2Key = ALLEGRO_KEY_DOWN;
+
   homura.x = 100;
   homura.y = 400;
   homura.animationDirection = 0;
 
-  homura.velX = 2;
+  homura.velX = 5;
   homura.dirX = 0;
   homura.dirY = 0;
 
@@ -36,8 +45,7 @@ void main(int argc, int **argv){
   homura.running.maxFrame = 7;
   homura.running.curFrame = 0;
   homura.running.frameCount = 0;
-  homura.running.frameDelay = 4;
-  homura.running.animationColumns = 8;
+  homura.running.frameDelay = 2;
 
   homura.running.image = al_load_bitmap("imgs/sprites/running/homura_running_by_konbe.bmp");
   al_convert_mask_to_alpha(homura.running.image, al_map_rgb(0, 255, 38));
@@ -47,11 +55,31 @@ void main(int argc, int **argv){
   homura.idle.maxFrame = 8;
   homura.idle.curFrame = 0;
   homura.idle.frameCount = 0;
-  homura.idle.frameDelay = 6;
-  homura.idle.animationColumns = 8;
+  homura.idle.frameDelay = 2;
 
   homura.idle.image = al_load_bitmap("imgs/sprites/idle/homura_idle_by_konbe.bmp");
   al_convert_mask_to_alpha(homura.idle.image, al_map_rgb(0, 255, 38));
+
+  homura.attack1.heigth = 128;
+  homura.attack1.width = 100;
+  homura.attack1.maxFrame = 8;
+  homura.attack1.curFrame = 0;
+  homura.attack1.frameCount = 0;
+  homura.attack1.frameDelay = 2;
+
+  homura.attack1.image = al_load_bitmap("imgs/sprites/attacking/homura_attack1_by_konbe.bmp");
+  al_convert_mask_to_alpha(homura.attack1.image, al_map_rgb(0, 255, 38));
+
+  homura.attack2.heigth = 128;
+  homura.attack2.width = 74;
+  homura.attack2.maxFrame = 7;
+  homura.attack2.curFrame = 0;
+  homura.attack2.frameCount = 0;
+  homura.attack2.frameDelay = 2;
+
+  homura.attack2.image = al_load_bitmap("imgs/sprites/attacking/homura_attack2_by_konbe.bmp");
+  al_convert_mask_to_alpha(homura.attack2.image, al_map_rgb(0, 255, 38));
+
 
   homura.current_sprite = homura.idle;
 
@@ -67,23 +95,21 @@ void main(int argc, int **argv){
     }
 
     if (event.type == ALLEGRO_EVENT_KEY_DOWN) {
-      switch (event.keyboard.keycode){
-        case ALLEGRO_KEY_ESCAPE:
-          done = true;
-        break;
-        case ALLEGRO_KEY_LEFT:
-          moveCharacterLeft(&homura);
-        break;
-        case ALLEGRO_KEY_RIGHT:
-          moveCharacterRight(&homura);
-          
-        break;
+      if (event.keyboard.keycode == ALLEGRO_KEY_ESCAPE){
+        done = true;
+      } else if (event.keyboard.keycode == homura.leftKey) {
+        moveCharacterLeft(&homura);
+      } else if (event.keyboard.keycode == homura.rightKey) {
+        moveCharacterRight(&homura);
+      } else if (event.keyboard.keycode == homura.attack1Key) {
+        makeAttack1(&homura);
+      } else if (event.keyboard.keycode == homura.attack2Key) {
+        makeAttack2(&homura);
       }
     } else if(event.type == ALLEGRO_EVENT_KEY_UP){
       homura.current_sprite = homura.idle;
       homura.dirX = 0;
     } else if(event.type == ALLEGRO_EVENT_TIMER) {
-
       if(++homura.current_sprite.frameCount >= homura.current_sprite.frameDelay) {
         if(++homura.current_sprite.curFrame >= homura.current_sprite.maxFrame)
           homura.current_sprite.curFrame = 0;
@@ -142,7 +168,7 @@ void init(){
 
   event_queue = al_create_event_queue();
 
-  timer = al_create_timer(1.0 / 40);
+  timer = al_create_timer(1.0 / FPS);
   al_start_timer(timer);
 
   al_set_window_title(display, "｡＾･ｪ･＾｡");
@@ -162,4 +188,12 @@ void moveCharacterRight(Character *c){
   (*c).animationDirection = 0;
   (*c).dirX = 1;
   (*c).current_sprite = (*c).running;
+}
+
+void makeAttack1(Character *c){
+  (*c).current_sprite = (*c).attack1;
+}
+
+void makeAttack2(Character *c){
+  (*c).current_sprite = (*c).attack2;
 }

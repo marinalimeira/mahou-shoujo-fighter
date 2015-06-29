@@ -6,12 +6,17 @@ typedef struct {
   int curFrame;
   int frameCount;
   int frameDelay;
-  int animationColumns;
 
   ALLEGRO_BITMAP *image;
 } Sprite;
 
 typedef struct {
+
+  int leftKey;
+  int rightKey;
+  int attack1Key;
+  int attack2Key;
+
   float x;
   float y;
   int dirX;
@@ -24,6 +29,8 @@ typedef struct {
 
   Sprite running;
   Sprite idle;
+  Sprite attack1;
+  Sprite attack2;
 
   Sprite current_sprite;
 } Character;
