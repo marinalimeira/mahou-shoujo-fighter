@@ -18,8 +18,10 @@ ALLEGRO_SAMPLE *main_song = NULL;
 void init();
 void moveCharacterLeft(Character *c);
 void moveCharacterRight(Character *c);
-void makeAttack1(Character *c);
+void makeAttack1(Character *c, Bullet *b);
 void makeAttack2(Character *c);
+void moveBullet(Bullet *b);
+void collideBullet(Bullet *b, Character *c);
 
 void main(int argc, int **argv){
 
@@ -137,6 +139,16 @@ void main(int argc, int **argv){
   mami.attack2.image = al_load_bitmap("imgs/sprites/attacking/mami_attack2_by_konbe.bmp");
   al_convert_mask_to_alpha(mami.attack2.image, al_map_rgb(0, 255, 38));
 
+  mami.hurt.heigth = 140;
+  mami.hurt.width = 141;
+  mami.hurt.maxFrame = 18;
+  mami.hurt.curFrame = 0;
+  mami.hurt.frameCount = 0;
+  mami.hurt.frameDelay = 2;
+
+  mami.hurt.image = al_load_bitmap("imgs/sprites/hurt/mami_hurt_by_konbe.bmp");
+  al_convert_mask_to_alpha(mami.hurt.image, al_map_rgb(0, 255, 38));
+
   mami.current_sprite = mami.idle;
 
   Cloud cloud1;
@@ -173,9 +185,13 @@ void main(int argc, int **argv){
   al_convert_mask_to_alpha(cloud3.image, al_map_rgb(0, 255, 38));
 
   Bullet bullet;
-
+  bullet.fired = false;
   bullet.speed = 10;
-  bullet.damage = 5;
+  //bullet.damage = 5;
+  bullet.dirX = 1;
+  bullet.animationDirection = 0;
+  bullet.image = al_load_bitmap("imgs/miscellaneous/homura_bullet.bmp");
+  al_convert_mask_to_alpha(bullet.image, al_map_rgb(0, 255, 51));
 
   bool done = false;
 
@@ -198,7 +214,7 @@ void main(int argc, int **argv){
         homura.dirX = 1;
         moveCharacterRight(&homura);
       } else if (event.keyboard.keycode == homura.attack1Key) {
-        makeAttack1(&homura);
+        makeAttack1(&homura, &bullet);
       } else if (event.keyboard.keycode == homura.attack2Key) {
         makeAttack2(&homura);
       } else if (event.keyboard.keycode == mami.leftKey) {
@@ -208,7 +224,7 @@ void main(int argc, int **argv){
         mami.dirX = -1;
         moveCharacterRight(&mami);
       } else if (event.keyboard.keycode == mami.attack1Key) {
-        makeAttack1(&mami);
+        makeAttack1(&mami, &bullet);
       } else if (event.keyboard.keycode == mami.attack2Key) {
         makeAttack2(&mami);
       }
@@ -278,8 +294,19 @@ void main(int argc, int **argv){
       if (cloud3.x <= -297){
         cloud3.x = 900;
       }
+
+      if(bullet.fired){
+        moveBullet(&bullet);
+        collideBullet(&bullet, &mami);
+      }
     }
 
+    if (bullet.fired){
+      al_draw_bitmap_region(bullet.image, 0, 0, 17, 6, bullet.x, bullet.y, bullet.animationDirection);
+      if (bullet.x >= 900 || bullet.x <= -17)
+        bullet.fired = false; 
+    }
+    
     al_draw_bitmap_region(homura.current_sprite.image, homura.current_sprite.curFrame * homura.current_sprite.width, 0, homura.current_sprite.width, homura.current_sprite.heigth, homura.x, homura.y, homura.animationDirection);
     al_draw_bitmap_region(mami.current_sprite.image, mami.current_sprite.curFrame * mami.current_sprite.width, 0, mami.current_sprite.width, mami.current_sprite.heigth, mami.x, mami.y, mami.animationDirection);
     al_draw_bitmap_region(cloud1.image, 0, 0, 290, 160, cloud1.x, cloud1.y, 0);
@@ -343,10 +370,40 @@ void moveCharacterRight(Character *c){
   (*c).current_sprite = (*c).running;
 }
 
-void makeAttack1(Character *c){
-  (*c).current_sprite = (*c).attack1;
+void makeAttack1(Character *c, Bullet *b){
+  printf("%d\n", (*b).fired);
+  if (!(*b).fired){
+    (*c).current_sprite = (*c).attack1;
+
+    if ((*b).animationDirection == ALLEGRO_FLIP_HORIZONTAL) {
+      (*b).animationDirection = 0;
+      (*b).dirX = 1;
+    }
+    if ((*c).animationDirection == 0){
+      (*b).x = (*c).x + 96;
+      (*b).y = (*c).y + 47;
+    } else {
+      (*b).x = (*c).x - 13;
+      (*b).y = (*c).y + 47;
+      (*b).animationDirection = ALLEGRO_FLIP_HORIZONTAL; 
+      (*b).dirX = -1;
+    }
+    (*b).fired = true;
+  }
+}
+
+void collideBullet(Bullet *b, Character *c){
+  if ((*b).x >= (*c).x && (*b).dirX == 1){
+    (*b).fired = false;
+  } else if ((*b).x <= (*c).x + 100 && (*b).dirX == -1){
+    (*b).fired = false;
+  }
 }
 
 void makeAttack2(Character *c){
   (*c).current_sprite = (*c).attack2;
+}
+
+void moveBullet(Bullet *b){
+  (*b).x += (*b).speed * (*b).dirX;
 }

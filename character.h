@@ -31,6 +31,7 @@ typedef struct {
   Sprite idle;
   Sprite attack1;
   Sprite attack2;
+  Sprite hurt;
 
   Sprite current_sprite;
 } Character;
@@ -51,9 +52,11 @@ typedef struct {
   float y;
 
   int dirX;
+  int animationDirection;
 
   int speed;
   int damage;
+  bool fired;
 
   ALLEGRO_BITMAP *image;
 } Bullet;
