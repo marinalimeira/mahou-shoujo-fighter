@@ -3,6 +3,8 @@
 #include <allegro5/allegro_image.h>
 #include <allegro5/allegro_audio.h>
 #include <allegro5/allegro_acodec.h>
+#include <allegro5/allegro_font.h>
+#include <allegro5/allegro_ttf.h>
 #include "character.h"
 
 #define HEIGHT 900
@@ -14,6 +16,7 @@ ALLEGRO_BITMAP *background = NULL;
 ALLEGRO_EVENT_QUEUE *event_queue = NULL;
 ALLEGRO_TIMER *timer = NULL;
 ALLEGRO_SAMPLE *main_song = NULL;
+ALLEGRO_FONT *font = NULL;
 
 void init();
 void moveCharacterLeft(Character *c);
@@ -29,6 +32,7 @@ void main(int argc, int **argv){
 
   Character homura;
 
+  homura.life = 100;
   homura.leftKey = ALLEGRO_KEY_LEFT;
   homura.rightKey = ALLEGRO_KEY_RIGHT;
   homura.attack1Key = ALLEGRO_KEY_UP;
@@ -48,6 +52,7 @@ void main(int argc, int **argv){
   homura.running.curFrame = 0;
   homura.running.frameCount = 0;
   homura.running.frameDelay = 2;
+  homura.running.limited = false;
 
   homura.running.image = al_load_bitmap("imgs/sprites/running/homura_running_by_konbe.bmp");
   al_convert_mask_to_alpha(homura.running.image, al_map_rgb(0, 255, 38));
@@ -58,6 +63,7 @@ void main(int argc, int **argv){
   homura.idle.curFrame = 0;
   homura.idle.frameCount = 0;
   homura.idle.frameDelay = 2;
+  homura.idle.limited = false;
 
   homura.idle.image = al_load_bitmap("imgs/sprites/idle/homura_idle_by_konbe.bmp");
   al_convert_mask_to_alpha(homura.idle.image, al_map_rgb(0, 255, 38));
@@ -68,6 +74,7 @@ void main(int argc, int **argv){
   homura.attack1.curFrame = 0;
   homura.attack1.frameCount = 0;
   homura.attack1.frameDelay = 2;
+  homura.attack1.limited = true;
 
   homura.attack1.image = al_load_bitmap("imgs/sprites/attacking/homura_attack1_by_konbe.bmp");
   al_convert_mask_to_alpha(homura.attack1.image, al_map_rgb(0, 255, 38));
@@ -78,6 +85,7 @@ void main(int argc, int **argv){
   homura.attack2.curFrame = 0;
   homura.attack2.frameCount = 0;
   homura.attack2.frameDelay = 2;
+  homura.attack2.limited = true;
 
   homura.attack2.image = al_load_bitmap("imgs/sprites/attacking/homura_attack2_by_konbe.bmp");
   al_convert_mask_to_alpha(homura.attack2.image, al_map_rgb(0, 255, 38));
@@ -86,6 +94,7 @@ void main(int argc, int **argv){
 
   Character mami;
 
+  mami.life = 100;
   mami.leftKey = ALLEGRO_KEY_D;
   mami.rightKey = ALLEGRO_KEY_A;
   mami.attack1Key = ALLEGRO_KEY_W;
@@ -105,6 +114,7 @@ void main(int argc, int **argv){
   mami.running.curFrame = 0;
   mami.running.frameCount = 0;
   mami.running.frameDelay = 2;
+  mami.running.limited = false;
 
   mami.running.image = al_load_bitmap("imgs/sprites/running/mami_running_by_konbe.bmp");
   al_convert_mask_to_alpha(mami.running.image, al_map_rgb(0, 255, 38));
@@ -115,6 +125,7 @@ void main(int argc, int **argv){
   mami.idle.curFrame = 0;
   mami.idle.frameCount = 0;
   mami.idle.frameDelay = 2;
+  mami.idle.limited = false;
 
   mami.idle.image = al_load_bitmap("imgs/sprites/idle/mami_idle_by_konbe.bmp");
   al_convert_mask_to_alpha(mami.idle.image, al_map_rgb(0, 255, 38));
@@ -125,6 +136,7 @@ void main(int argc, int **argv){
   mami.attack1.curFrame = 0;
   mami.attack1.frameCount = 0;
   mami.attack1.frameDelay = 2;
+  mami.attack1.limited = true;
 
   mami.attack1.image = al_load_bitmap("imgs/sprites/attacking/mami_attack1_by_konbe.bmp");
   al_convert_mask_to_alpha(mami.attack1.image, al_map_rgb(0, 255, 38));
@@ -135,16 +147,18 @@ void main(int argc, int **argv){
   mami.attack2.curFrame = 0;
   mami.attack2.frameCount = 0;
   mami.attack2.frameDelay = 2;
+  mami.attack2.limited = true;
 
   mami.attack2.image = al_load_bitmap("imgs/sprites/attacking/mami_attack2_by_konbe.bmp");
   al_convert_mask_to_alpha(mami.attack2.image, al_map_rgb(0, 255, 38));
 
   mami.hurt.heigth = 140;
-  mami.hurt.width = 141;
-  mami.hurt.maxFrame = 18;
+  mami.hurt.width = 124;
+  mami.hurt.maxFrame = 6;
   mami.hurt.curFrame = 0;
   mami.hurt.frameCount = 0;
   mami.hurt.frameDelay = 2;
+  mami.hurt.limited = true;
 
   mami.hurt.image = al_load_bitmap("imgs/sprites/hurt/mami_hurt_by_konbe.bmp");
   al_convert_mask_to_alpha(mami.hurt.image, al_map_rgb(0, 255, 38));
@@ -187,7 +201,7 @@ void main(int argc, int **argv){
   Bullet bullet;
   bullet.fired = false;
   bullet.speed = 10;
-  //bullet.damage = 5;
+  bullet.damage = 7.5;
   bullet.dirX = 1;
   bullet.animationDirection = 0;
   bullet.image = al_load_bitmap("imgs/miscellaneous/homura_bullet.bmp");
@@ -242,8 +256,11 @@ void main(int argc, int **argv){
       }       
     } else if(event.type == ALLEGRO_EVENT_TIMER) {
       if(++homura.current_sprite.frameCount >= homura.current_sprite.frameDelay) {
-        if(++homura.current_sprite.curFrame >= homura.current_sprite.maxFrame)
+        if(++homura.current_sprite.curFrame >= homura.current_sprite.maxFrame){
+          if (homura.current_sprite.limited)
+            homura.current_sprite = homura.idle;
           homura.current_sprite.curFrame = 0;
+        }
         else if (homura.current_sprite.curFrame <= 0)
           homura.current_sprite.curFrame = homura.current_sprite.maxFrame - 1; 
 
@@ -260,8 +277,11 @@ void main(int argc, int **argv){
       }
       
       if(++mami.current_sprite.frameCount >= mami.current_sprite.frameDelay) {
-        if(++mami.current_sprite.curFrame >= mami.current_sprite.maxFrame)
+        if(++mami.current_sprite.curFrame >= mami.current_sprite.maxFrame){
+          if (mami.current_sprite.limited)
+            mami.current_sprite = mami.idle;
           mami.current_sprite.curFrame = 0;
+        }
         else if (mami.current_sprite.curFrame <= 0)
           mami.current_sprite.curFrame = mami.current_sprite.maxFrame - 1; 
 
@@ -312,6 +332,9 @@ void main(int argc, int **argv){
     al_draw_bitmap_region(cloud1.image, 0, 0, 290, 160, cloud1.x, cloud1.y, 0);
     al_draw_bitmap_region(cloud2.image, 0, 0, 238, 140, cloud2.x, cloud2.y, 0);
     al_draw_bitmap_region(cloud3.image, 0, 0, 569, 247, cloud3.x, cloud3.y, 0);
+    char str[20]  = "";
+    sprintf(str, "%.2f", mami.life);
+    al_draw_text(font, al_map_rgb(69, 90, 100), 700, 10, ALLEGRO_ALIGN_LEFT, str);
     al_flip_display();
     al_draw_bitmap(background, 0, 0, 0);
   }
@@ -348,6 +371,11 @@ void init(){
 
   al_play_sample(main_song, 1.0, 0.0, 1.0, ALLEGRO_PLAYMODE_LOOP, NULL);
 
+  al_init_font_addon();
+  if (!al_init_ttf_addon() ? printf("Failed to initialize ttf!\n") : 0);
+
+  font = al_load_ttf_font("fonts/pixelpoiiz.ttf", 43, 0);
+
   event_queue = al_create_event_queue();
 
   timer = al_create_timer(1.0 / FPS);
@@ -371,7 +399,6 @@ void moveCharacterRight(Character *c){
 }
 
 void makeAttack1(Character *c, Bullet *b){
-  printf("%d\n", (*b).fired);
   if (!(*b).fired){
     (*c).current_sprite = (*c).attack1;
 
@@ -393,10 +420,10 @@ void makeAttack1(Character *c, Bullet *b){
 }
 
 void collideBullet(Bullet *b, Character *c){
-  if ((*b).x >= (*c).x && (*b).dirX == 1){
+  if (((*b).x >= (*c).x && (*b).dirX == 1) || ((*b).x <= (*c).x + 100 && (*b).dirX == -1)){
     (*b).fired = false;
-  } else if ((*b).x <= (*c).x + 100 && (*b).dirX == -1){
-    (*b).fired = false;
+    (*c).current_sprite = (*c).hurt;
+    (*c).life -= (*b).damage;
   }
 }
 

@@ -6,6 +6,7 @@ typedef struct {
   int curFrame;
   int frameCount;
   int frameDelay;
+  bool limited;
 
   ALLEGRO_BITMAP *image;
 } Sprite;
@@ -16,6 +17,8 @@ typedef struct {
   int rightKey;
   int attack1Key;
   int attack2Key;
+
+  float life;
 
   float x;
   float y;
