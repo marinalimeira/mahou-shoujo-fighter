@@ -18,7 +18,7 @@ typedef struct {
   int attack1Key;
   int attack2Key;
 
-  float life;
+  int life;
 
   float x;
   float y;

@@ -24,7 +24,7 @@ void moveCharacterRight(Character *c);
 void makeAttack1(Character *c, Bullet *b);
 void makeAttack2(Character *c);
 void moveBullet(Bullet *b);
-void collideBullet(Bullet *b, Character *c);
+void collideBullet(Bullet *b, Character *character, Character *enemie);
 
 void main(int argc, int **argv){
 
@@ -201,7 +201,7 @@ void main(int argc, int **argv){
   Bullet bullet;
   bullet.fired = false;
   bullet.speed = 10;
-  bullet.damage = 7.5;
+  bullet.damage = 7;
   bullet.dirX = 1;
   bullet.animationDirection = 0;
   bullet.image = al_load_bitmap("imgs/miscellaneous/homura_bullet.bmp");
@@ -317,7 +317,7 @@ void main(int argc, int **argv){
 
       if(bullet.fired){
         moveBullet(&bullet);
-        collideBullet(&bullet, &mami);
+        collideBullet(&bullet, &homura, &mami);
       }
     }
 
@@ -333,8 +333,8 @@ void main(int argc, int **argv){
     al_draw_bitmap_region(cloud2.image, 0, 0, 238, 140, cloud2.x, cloud2.y, 0);
     al_draw_bitmap_region(cloud3.image, 0, 0, 569, 247, cloud3.x, cloud3.y, 0);
     char str[20]  = "";
-    sprintf(str, "%.2f", mami.life);
-    al_draw_text(font, al_map_rgb(69, 90, 100), 700, 10, ALLEGRO_ALIGN_LEFT, str);
+    sprintf(str, "%d", mami.life);
+    al_draw_text(font, al_map_rgb(84, 110, 122), 800, 10, ALLEGRO_ALIGN_LEFT, str);
     al_flip_display();
     al_draw_bitmap(background, 0, 0, 0);
   }
@@ -419,11 +419,12 @@ void makeAttack1(Character *c, Bullet *b){
   }
 }
 
-void collideBullet(Bullet *b, Character *c){
-  if (((*b).x >= (*c).x && (*b).dirX == 1) || ((*b).x <= (*c).x + 100 && (*b).dirX == -1)){
+void collideBullet(Bullet *b, Character *character, Character *enemie){
+  if (((*b).x >= (*enemie).x && (*b).dirX == 1 && ((*character).x < (*enemie).x)) || 
+      ((*b).x <= (*enemie).x + 100 && (*b).dirX == -1 && ((*character).x > (*enemie).x))){
     (*b).fired = false;
-    (*c).current_sprite = (*c).hurt;
-    (*c).life -= (*b).damage;
+    (*enemie).current_sprite = (*enemie).hurt;
+    (*enemie).life -= (*b).damage;
   }
 }
 
