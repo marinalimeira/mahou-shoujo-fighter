@@ -80,8 +80,40 @@ void main(int argc, int **argv){
   homura.attack2.image = al_load_bitmap("imgs/sprites/attacking/homura_attack2_by_konbe.bmp");
   al_convert_mask_to_alpha(homura.attack2.image, al_map_rgb(0, 255, 38));
 
-
   homura.current_sprite = homura.idle;
+
+  Cloud cloud1;
+  cloud1.x = 400;
+  cloud1.y = 110;
+
+  cloud1.dirX = -1;
+  
+  cloud1.velX = 1;
+
+  cloud1.image = al_load_bitmap("imgs/miscellaneous/cloud1.bmp");
+  al_convert_mask_to_alpha(cloud1.image, al_map_rgb(0, 255, 38));
+
+  Cloud cloud2;
+  cloud2.x = 50;
+  cloud2.y = 120;
+
+  cloud2.dirX = -1;
+  
+  cloud2.velX = 1;
+
+  cloud2.image = al_load_bitmap("imgs/miscellaneous/cloud2.bmp");
+  al_convert_mask_to_alpha(cloud2.image, al_map_rgb(0, 255, 38));
+
+  Cloud cloud3;
+  cloud3.x = 800;
+  cloud3.y = 80;
+
+  cloud3.dirX = -1;
+  
+  cloud3.velX = 1;
+
+  cloud3.image = al_load_bitmap("imgs/miscellaneous/cloud3.bmp");
+  al_convert_mask_to_alpha(cloud3.image, al_map_rgb(0, 255, 38));
 
   bool done = false;
 
@@ -127,9 +159,30 @@ void main(int argc, int **argv){
       else if (homura.x <= 0){
         homura.x = 0;
       }
+    
+      cloud1.x += cloud1.velX * cloud1.dirX;
+
+      if (cloud1.x <= -297){
+        cloud1.x = 900;
+      }
+
+      cloud2.x += cloud2.velX * cloud2.dirX;
+
+      if (cloud2.x <= -300){
+        cloud2.x = 900;
+      }
+
+      cloud3.x += cloud3.velX * cloud3.dirX;
+
+      if (cloud3.x <= -237){
+        cloud3.x = 900;
+      }
     }
 
     al_draw_bitmap_region(homura.current_sprite.image, homura.current_sprite.curFrame * homura.current_sprite.width, 0, homura.current_sprite.width, homura.current_sprite.heigth, homura.x, homura.y, homura.animationDirection);
+    al_draw_bitmap_region(cloud1.image, 0, 0, 290, 160, cloud1.x, cloud1.y, 0);
+    al_draw_bitmap_region(cloud2.image, 0, 0, 238, 140, cloud2.x, cloud2.y, 0);
+    al_draw_bitmap_region(cloud3.image, 0, 0, 569, 247, cloud3.x, cloud3.y, 0);
     al_flip_display();
     al_draw_bitmap(background, 0, 0, 0);
   }

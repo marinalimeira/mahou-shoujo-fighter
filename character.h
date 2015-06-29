@@ -34,3 +34,15 @@ typedef struct {
 
   Sprite current_sprite;
 } Character;
+
+typedef struct {
+  float x;
+  float y;
+
+  int dirX;
+  
+  float velX;
+
+  ALLEGRO_BITMAP *image;
+
+} Cloud;
