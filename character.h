@@ -44,5 +44,16 @@ typedef struct {
   float velX;
 
   ALLEGRO_BITMAP *image;
-
 } Cloud;
+
+typedef struct {
+  float x;
+  float y;
+
+  int dirX;
+
+  int speed;
+  int damage;
+
+  ALLEGRO_BITMAP *image;
+} Bullet;
