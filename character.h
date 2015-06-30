@@ -12,6 +12,20 @@ typedef struct {
 } Sprite;
 
 typedef struct {
+  float x;
+  float y;
+
+  int dirX;
+  int animationDirection;
+
+  int speed;
+  int damage;
+  bool fired;
+
+  ALLEGRO_BITMAP *image;
+} Bullet;
+
+typedef struct {
 
   int leftKey;
   int rightKey;
@@ -35,8 +49,11 @@ typedef struct {
   Sprite attack1;
   Sprite attack2;
   Sprite hurt;
+  Sprite dying;
 
   Sprite current_sprite;
+
+  Bullet bullet;
 } Character;
 
 typedef struct {
@@ -49,17 +66,3 @@ typedef struct {
 
   ALLEGRO_BITMAP *image;
 } Cloud;
-
-typedef struct {
-  float x;
-  float y;
-
-  int dirX;
-  int animationDirection;
-
-  int speed;
-  int damage;
-  bool fired;
-
-  ALLEGRO_BITMAP *image;
-} Bullet;

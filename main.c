@@ -5,7 +5,6 @@
 #include <allegro5/allegro_acodec.h>
 #include <allegro5/allegro_font.h>
 #include <allegro5/allegro_ttf.h>
-#include "character.h"
 
 #define HEIGHT 900
 #define WIDTH 600
@@ -18,194 +17,30 @@ ALLEGRO_TIMER *timer = NULL;
 ALLEGRO_SAMPLE *main_song = NULL;
 ALLEGRO_FONT *font = NULL;
 
+#include "character.h"
+#include "initializeCharacters.c"
+#include "characterFunctions.c"
+#include "initializeClouds.c"
+#include "cloudFunctions.c"
+
 void init();
-void moveCharacterLeft(Character *c);
-void moveCharacterRight(Character *c);
-void makeAttack1(Character *c, Bullet *b);
-void makeAttack2(Character *c);
-void moveBullet(Bullet *b);
-void collideBullet(Bullet *b, Character *character, Character *enemie);
 
 void main(int argc, int **argv){
-
   init();
 
   Character homura;
-
-  homura.life = 100;
-  homura.leftKey = ALLEGRO_KEY_LEFT;
-  homura.rightKey = ALLEGRO_KEY_RIGHT;
-  homura.attack1Key = ALLEGRO_KEY_UP;
-  homura.attack2Key = ALLEGRO_KEY_DOWN;
-
-  homura.x = 100;
-  homura.y = 400;
-  homura.animationDirection = 0;
-
-  homura.velX = 5;
-  homura.dirX = 0;
-  homura.dirY = 0;
-
-  homura.running.heigth = 128;
-  homura.running.width = 108;
-  homura.running.maxFrame = 7;
-  homura.running.curFrame = 0;
-  homura.running.frameCount = 0;
-  homura.running.frameDelay = 2;
-  homura.running.limited = false;
-
-  homura.running.image = al_load_bitmap("imgs/sprites/running/homura_running_by_konbe.bmp");
-  al_convert_mask_to_alpha(homura.running.image, al_map_rgb(0, 255, 38));
-
-  homura.idle.heigth = 128;
-  homura.idle.width = 98;
-  homura.idle.maxFrame = 8;
-  homura.idle.curFrame = 0;
-  homura.idle.frameCount = 0;
-  homura.idle.frameDelay = 2;
-  homura.idle.limited = false;
-
-  homura.idle.image = al_load_bitmap("imgs/sprites/idle/homura_idle_by_konbe.bmp");
-  al_convert_mask_to_alpha(homura.idle.image, al_map_rgb(0, 255, 38));
-
-  homura.attack1.heigth = 128;
-  homura.attack1.width = 100;
-  homura.attack1.maxFrame = 8;
-  homura.attack1.curFrame = 0;
-  homura.attack1.frameCount = 0;
-  homura.attack1.frameDelay = 2;
-  homura.attack1.limited = true;
-
-  homura.attack1.image = al_load_bitmap("imgs/sprites/attacking/homura_attack1_by_konbe.bmp");
-  al_convert_mask_to_alpha(homura.attack1.image, al_map_rgb(0, 255, 38));
-
-  homura.attack2.heigth = 128;
-  homura.attack2.width = 74;
-  homura.attack2.maxFrame = 7;
-  homura.attack2.curFrame = 0;
-  homura.attack2.frameCount = 0;
-  homura.attack2.frameDelay = 2;
-  homura.attack2.limited = true;
-
-  homura.attack2.image = al_load_bitmap("imgs/sprites/attacking/homura_attack2_by_konbe.bmp");
-  al_convert_mask_to_alpha(homura.attack2.image, al_map_rgb(0, 255, 38));
-
-  homura.current_sprite = homura.idle;
-
   Character mami;
 
-  mami.life = 100;
-  mami.leftKey = ALLEGRO_KEY_D;
-  mami.rightKey = ALLEGRO_KEY_A;
-  mami.attack1Key = ALLEGRO_KEY_W;
-  mami.attack2Key = ALLEGRO_KEY_S;
-
-  mami.x = 670;
-  mami.y = 400;
-  mami.animationDirection = 0;
-
-  mami.velX = 5;
-  mami.dirX = 0;
-  mami.dirY = -1;
-
-  mami.running.heigth = 128;
-  mami.running.width = 108;
-  mami.running.maxFrame = 8;
-  mami.running.curFrame = 0;
-  mami.running.frameCount = 0;
-  mami.running.frameDelay = 2;
-  mami.running.limited = false;
-
-  mami.running.image = al_load_bitmap("imgs/sprites/running/mami_running_by_konbe.bmp");
-  al_convert_mask_to_alpha(mami.running.image, al_map_rgb(0, 255, 38));
-
-  mami.idle.heigth = 128;
-  mami.idle.width = 103;
-  mami.idle.maxFrame = 6;
-  mami.idle.curFrame = 0;
-  mami.idle.frameCount = 0;
-  mami.idle.frameDelay = 2;
-  mami.idle.limited = false;
-
-  mami.idle.image = al_load_bitmap("imgs/sprites/idle/mami_idle_by_konbe.bmp");
-  al_convert_mask_to_alpha(mami.idle.image, al_map_rgb(0, 255, 38));
-
-  mami.attack1.heigth = 150;
-  mami.attack1.width = 120;
-  mami.attack1.maxFrame = 8;
-  mami.attack1.curFrame = 0;
-  mami.attack1.frameCount = 0;
-  mami.attack1.frameDelay = 2;
-  mami.attack1.limited = true;
-
-  mami.attack1.image = al_load_bitmap("imgs/sprites/attacking/mami_attack1_by_konbe.bmp");
-  al_convert_mask_to_alpha(mami.attack1.image, al_map_rgb(0, 255, 38));
-
-  mami.attack2.heigth = 140;
-  mami.attack2.width = 141;
-  mami.attack2.maxFrame = 18;
-  mami.attack2.curFrame = 0;
-  mami.attack2.frameCount = 0;
-  mami.attack2.frameDelay = 2;
-  mami.attack2.limited = true;
-
-  mami.attack2.image = al_load_bitmap("imgs/sprites/attacking/mami_attack2_by_konbe.bmp");
-  al_convert_mask_to_alpha(mami.attack2.image, al_map_rgb(0, 255, 38));
-
-  mami.hurt.heigth = 140;
-  mami.hurt.width = 124;
-  mami.hurt.maxFrame = 6;
-  mami.hurt.curFrame = 0;
-  mami.hurt.frameCount = 0;
-  mami.hurt.frameDelay = 2;
-  mami.hurt.limited = true;
-
-  mami.hurt.image = al_load_bitmap("imgs/sprites/hurt/mami_hurt_by_konbe.bmp");
-  al_convert_mask_to_alpha(mami.hurt.image, al_map_rgb(0, 255, 38));
-
-  mami.current_sprite = mami.idle;
+  initializeHomura(&homura);
+  initializeMami(&mami);
 
   Cloud cloud1;
-  cloud1.x = 400;
-  cloud1.y = 110;
-
-  cloud1.dirX = -1;
-  
-  cloud1.velX = 1;
-
-  cloud1.image = al_load_bitmap("imgs/miscellaneous/cloud1.bmp");
-  al_convert_mask_to_alpha(cloud1.image, al_map_rgb(0, 255, 38));
-
   Cloud cloud2;
-  cloud2.x = 50;
-  cloud2.y = 120;
-
-  cloud2.dirX = -1;
-  
-  cloud2.velX = 1;
-
-  cloud2.image = al_load_bitmap("imgs/miscellaneous/cloud2.bmp");
-  al_convert_mask_to_alpha(cloud2.image, al_map_rgb(0, 255, 38));
-
   Cloud cloud3;
-  cloud3.x = 800;
-  cloud3.y = 80;
 
-  cloud3.dirX = -1;
-  
-  cloud3.velX = 1;
-
-  cloud3.image = al_load_bitmap("imgs/miscellaneous/cloud3.bmp");
-  al_convert_mask_to_alpha(cloud3.image, al_map_rgb(0, 255, 38));
-
-  Bullet bullet;
-  bullet.fired = false;
-  bullet.speed = 10;
-  bullet.damage = 7;
-  bullet.dirX = 1;
-  bullet.animationDirection = 0;
-  bullet.image = al_load_bitmap("imgs/miscellaneous/homura_bullet.bmp");
-  al_convert_mask_to_alpha(bullet.image, al_map_rgb(0, 255, 51));
+  initializeCloud1(&cloud1);
+  initializeCloud2(&cloud2);
+  initializeCloud3(&cloud3);
 
   bool done = false;
 
@@ -228,7 +63,7 @@ void main(int argc, int **argv){
         homura.dirX = 1;
         moveCharacterRight(&homura);
       } else if (event.keyboard.keycode == homura.attack1Key) {
-        makeAttack1(&homura, &bullet);
+        makeHomuraAttack1(&homura);
       } else if (event.keyboard.keycode == homura.attack2Key) {
         makeAttack2(&homura);
       } else if (event.keyboard.keycode == mami.leftKey) {
@@ -238,7 +73,7 @@ void main(int argc, int **argv){
         mami.dirX = -1;
         moveCharacterRight(&mami);
       } else if (event.keyboard.keycode == mami.attack1Key) {
-        makeAttack1(&mami, &bullet);
+        makeMamiAttack1(&mami);
       } else if (event.keyboard.keycode == mami.attack2Key) {
         makeAttack2(&mami);
       }
@@ -255,86 +90,45 @@ void main(int argc, int **argv){
         mami.dirX = 0;
       }       
     } else if(event.type == ALLEGRO_EVENT_TIMER) {
-      if(++homura.current_sprite.frameCount >= homura.current_sprite.frameDelay) {
-        if(++homura.current_sprite.curFrame >= homura.current_sprite.maxFrame){
-          if (homura.current_sprite.limited)
-            homura.current_sprite = homura.idle;
-          homura.current_sprite.curFrame = 0;
-        }
-        else if (homura.current_sprite.curFrame <= 0)
-          homura.current_sprite.curFrame = homura.current_sprite.maxFrame - 1; 
-
-        homura.current_sprite.frameCount = 0;
-      }
-
-      homura.x += homura.velX * homura.dirX;
-
-      if(homura.x >= HEIGHT - 128){
-        homura.x = HEIGHT - 128;
-      }
-      else if (homura.x <= 0){
-        homura.x = 0;
-      }
+      animateCharacter(&homura);
+      animateCharacter(&mami);
       
-      if(++mami.current_sprite.frameCount >= mami.current_sprite.frameDelay) {
-        if(++mami.current_sprite.curFrame >= mami.current_sprite.maxFrame){
-          if (mami.current_sprite.limited)
-            mami.current_sprite = mami.idle;
-          mami.current_sprite.curFrame = 0;
-        }
-        else if (mami.current_sprite.curFrame <= 0)
-          mami.current_sprite.curFrame = mami.current_sprite.maxFrame - 1; 
-
-        mami.current_sprite.frameCount = 0;
-      }
-
-      mami.x += mami.velX * mami.dirX;
-
-      if(mami.x >= HEIGHT - 128){
-        mami.x = HEIGHT - 128;
-      }
-      else if (mami.x <= 0){
-        mami.x = 0;
-      }
-
-      cloud1.x += cloud1.velX * cloud1.dirX;
-
-      if (cloud1.x <= -297){
-        cloud1.x = 900;
-      }
-
-      cloud2.x += cloud2.velX * cloud2.dirX;
-
-      if (cloud2.x <= -300){
-        cloud2.x = 900;
-      }
-
-      cloud3.x += cloud3.velX * cloud3.dirX;
-
-      if (cloud3.x <= -297){
-        cloud3.x = 900;
-      }
-
-      if(bullet.fired){
-        moveBullet(&bullet);
-        collideBullet(&bullet, &homura, &mami);
-      }
+      moveCloud(&cloud1);
+      moveCloud(&cloud2);
+      moveCloud(&cloud3);
+      
+      collideBullet(&homura, &mami);
+      collideBullet(&mami, &homura);
     }
 
-    if (bullet.fired){
-      al_draw_bitmap_region(bullet.image, 0, 0, 17, 6, bullet.x, bullet.y, bullet.animationDirection);
-      if (bullet.x >= 900 || bullet.x <= -17)
-        bullet.fired = false; 
+    if (homura.bullet.fired){
+      al_draw_bitmap_region(homura.bullet.image, 0, 0, 12, 6, homura.bullet.x, homura.bullet.y, homura.bullet.animationDirection);
+      if (homura.bullet.x >= 900 || homura.bullet.x <= -17)
+        homura.bullet.fired = false; 
     }
+
+    if (mami.bullet.fired){
+      al_draw_bitmap_region(mami.bullet.image, 0, 0, 14, 5, mami.bullet.x, mami.bullet.y, mami.bullet.animationDirection);
+      if (mami.bullet.x >= 900 || mami.bullet.x <= -17)
+        mami.bullet.fired = false; 
+    }
+
+    if (mami.life <= 0)
+      die(&mami);
+    if (homura.life <= 0)
+      die(&homura);
     
     al_draw_bitmap_region(homura.current_sprite.image, homura.current_sprite.curFrame * homura.current_sprite.width, 0, homura.current_sprite.width, homura.current_sprite.heigth, homura.x, homura.y, homura.animationDirection);
     al_draw_bitmap_region(mami.current_sprite.image, mami.current_sprite.curFrame * mami.current_sprite.width, 0, mami.current_sprite.width, mami.current_sprite.heigth, mami.x, mami.y, mami.animationDirection);
     al_draw_bitmap_region(cloud1.image, 0, 0, 290, 160, cloud1.x, cloud1.y, 0);
     al_draw_bitmap_region(cloud2.image, 0, 0, 238, 140, cloud2.x, cloud2.y, 0);
     al_draw_bitmap_region(cloud3.image, 0, 0, 569, 247, cloud3.x, cloud3.y, 0);
-    char str[20]  = "";
-    sprintf(str, "%d", mami.life);
-    al_draw_text(font, al_map_rgb(84, 110, 122), 800, 10, ALLEGRO_ALIGN_LEFT, str);
+    char homu_life[5]  = "";
+    sprintf(homu_life, "%d", homura.life);
+    al_draw_text(font, al_map_rgb(74, 20, 140), 120, 10, ALLEGRO_ALIGN_RIGHT, homu_life);
+    char mami_life[5]  = "";
+    sprintf(mami_life, "%d", mami.life);
+    al_draw_text(font, al_map_rgb(249, 168, 37), 800, 10, ALLEGRO_ALIGN_LEFT, mami_life);
     al_flip_display();
     al_draw_bitmap(background, 0, 0, 0);
   }
@@ -386,52 +180,4 @@ void init(){
   al_register_event_source(event_queue, al_get_timer_event_source(timer));
   al_register_event_source(event_queue, al_get_keyboard_event_source());
   al_register_event_source(event_queue, al_get_display_event_source(display));
-}
-
-void moveCharacterLeft(Character *c){
-  (*c).animationDirection = ALLEGRO_FLIP_HORIZONTAL;  
-  (*c).current_sprite = (*c).running;
-}
-
-void moveCharacterRight(Character *c){
-  (*c).animationDirection = 0;
-  (*c).current_sprite = (*c).running;
-}
-
-void makeAttack1(Character *c, Bullet *b){
-  if (!(*b).fired){
-    (*c).current_sprite = (*c).attack1;
-
-    if ((*b).animationDirection == ALLEGRO_FLIP_HORIZONTAL) {
-      (*b).animationDirection = 0;
-      (*b).dirX = 1;
-    }
-    if ((*c).animationDirection == 0){
-      (*b).x = (*c).x + 96;
-      (*b).y = (*c).y + 47;
-    } else {
-      (*b).x = (*c).x - 13;
-      (*b).y = (*c).y + 47;
-      (*b).animationDirection = ALLEGRO_FLIP_HORIZONTAL; 
-      (*b).dirX = -1;
-    }
-    (*b).fired = true;
-  }
-}
-
-void collideBullet(Bullet *b, Character *character, Character *enemie){
-  if (((*b).x >= (*enemie).x && (*b).dirX == 1 && ((*character).x < (*enemie).x)) || 
-      ((*b).x <= (*enemie).x + 100 && (*b).dirX == -1 && ((*character).x > (*enemie).x))){
-    (*b).fired = false;
-    (*enemie).current_sprite = (*enemie).hurt;
-    (*enemie).life -= (*b).damage;
-  }
-}
-
-void makeAttack2(Character *c){
-  (*c).current_sprite = (*c).attack2;
-}
-
-void moveBullet(Bullet *b){
-  (*b).x += (*b).speed * (*b).dirX;
 }
