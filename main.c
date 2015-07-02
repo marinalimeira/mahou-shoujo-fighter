@@ -56,6 +56,10 @@ void main(int argc, int **argv){
     if (event.type == ALLEGRO_EVENT_KEY_DOWN) {
       if (event.keyboard.keycode == ALLEGRO_KEY_ESCAPE){
         done = true;
+      } else if (event.keyboard.keycode == homura.upKey) {
+        moveCharacterUp(&homura);
+      } else if (event.keyboard.keycode == homura.downKey) {
+        moveCharacterDown(&homura);
       } else if (event.keyboard.keycode == homura.leftKey) {
         homura.dirX = -1;
         moveCharacterLeft(&homura);
@@ -66,6 +70,10 @@ void main(int argc, int **argv){
         makeHomuraAttack1(&homura);
       } else if (event.keyboard.keycode == homura.attack2Key) {
         makeAttack2(&homura);
+      } else if (event.keyboard.keycode == mami.upKey) {
+        moveCharacterUp(&mami);
+      } else if (event.keyboard.keycode == mami.downKey) {
+        moveCharacterDown(&mami);
       } else if (event.keyboard.keycode == mami.leftKey) {
         mami.dirX = 1;
         moveCharacterLeft(&mami);
@@ -79,15 +87,18 @@ void main(int argc, int **argv){
       }
 
     } else if(event.type == ALLEGRO_EVENT_KEY_UP){
-
-      if ((event.keyboard.keycode == homura.rightKey) || (event.keyboard.keycode == homura.leftKey) ||
+      if ((event.keyboard.keycode == homura.upKey) || (event.keyboard.keycode == homura.downKey) ||
+        (event.keyboard.keycode == homura.rightKey) || (event.keyboard.keycode == homura.leftKey) ||
         (event.keyboard.keycode == homura.attack1Key) || (event.keyboard.keycode == homura.attack2Key)){
         homura.current_sprite = homura.idle;
-        homura.dirX = 0;        
-      } if ((event.keyboard.keycode == mami.rightKey) || (event.keyboard.keycode == mami.leftKey) ||
+        homura.dirX = 0;  
+        homura.dirY = 0;      
+      } if ((event.keyboard.keycode == mami.upKey) || (event.keyboard.keycode == mami.downKey) ||
+        (event.keyboard.keycode == mami.rightKey) || (event.keyboard.keycode == mami.leftKey) ||
         (event.keyboard.keycode == mami.attack1Key) || (event.keyboard.keycode == mami.attack2Key)){
         mami.current_sprite = mami.idle;
         mami.dirX = 0;
+        mami.dirY = 0;
       }       
     } else if(event.type == ALLEGRO_EVENT_TIMER) {
       animateCharacter(&homura);
@@ -148,7 +159,7 @@ void init(){
   display = al_create_display(HEIGHT, WIDTH);
   if (!display ? printf("Failed to create display.\n") : 0);
 
-  background = al_load_bitmap("imgs/bg.png");
+  background = al_load_bitmap("imgs/bg.bmp");
   al_draw_bitmap(background, 0, 0, 0);
 
   if (!background ? printf("Fail to load background.\n") : 0);

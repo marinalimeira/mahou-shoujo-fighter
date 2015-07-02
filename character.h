@@ -27,6 +27,8 @@ typedef struct {
 
 typedef struct {
 
+  int downKey;
+  int upKey;
   int leftKey;
   int rightKey;
   int attack1Key;

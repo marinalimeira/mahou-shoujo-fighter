@@ -1,3 +1,5 @@
+void moveCharacterUp(Character *c);
+void moveCharacterDown(Character *c);
 void moveCharacterLeft(Character *c);
 void moveCharacterRight(Character *c);
 void makeHomuraAttack1(Character *c);
@@ -6,6 +8,16 @@ void makeAttack2(Character *c);
 void collideBullet(Character *character, Character *enemie);
 void die(Character *c);
 void animateCharacter(Character *c);
+
+void moveCharacterUp(Character *c){
+  (*c).dirY = -1;
+  (*c).current_sprite = (*c).running;
+}
+
+void moveCharacterDown(Character *c){
+  (*c).dirY = 1;
+  (*c).current_sprite = (*c).running;
+}
 
 void moveCharacterLeft(Character *c){
   (*c).animationDirection = ALLEGRO_FLIP_HORIZONTAL;  
@@ -64,8 +76,9 @@ void makeAttack2(Character *c){
 void collideBullet(Character *c, Character *e){
   if ((*c).bullet.fired) {
     (*c).bullet.x += (*c).bullet.speed * (*c).bullet.dirX;
-    if (((*c).bullet.x >= (*e).x && (*c).bullet.dirX == 1 && ((*c).x < (*e).x)) || 
-        ((*c).bullet.x <= (*e).x + 100 && (*c).bullet.dirX == -1 && ((*c).x > (*e).x))){
+    if (((((*c).bullet.x >= (*e).x && (*c).bullet.dirX == 1 && ((*c).x < (*e).x)) || 
+        ((*c).bullet.x <= (*e).x + 100 && (*c).bullet.dirX == -1 && ((*c).x > (*e).x)))) &&
+        (((*c).bullet.y >= (*e).y) && ((*c).bullet.y <= (*e).current_sprite.width + (*e).y))){
       (*c).bullet.fired = false;
       (*e).current_sprite = (*e).hurt;
       (*e).life -= (*c).bullet.damage;
@@ -96,5 +109,13 @@ void animateCharacter(Character *c){
   }
   else if ((*c).x <= 0){
     (*c).x = 0;
+  }
+
+  (*c).y += (*c).velY * (*c).dirY;
+
+  if((*c).y <= WIDTH - 250){
+    (*c).y = WIDTH - 250;
+  } else if ((*c).y + 155 >= WIDTH){
+    (*c).y = WIDTH - 155;
   }
 }

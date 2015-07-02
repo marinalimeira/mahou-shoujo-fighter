@@ -3,16 +3,19 @@ void initializeMami(Character *mami);
 
 void initializeHomura(Character *homura){
   (*homura).life = 100;
-  (*homura).leftKey = ALLEGRO_KEY_LEFT;
-  (*homura).rightKey = ALLEGRO_KEY_RIGHT;
-  (*homura).attack1Key = ALLEGRO_KEY_UP;
-  (*homura).attack2Key = ALLEGRO_KEY_DOWN;
+  (*homura).upKey = ALLEGRO_KEY_W;
+  (*homura).downKey = ALLEGRO_KEY_S;
+  (*homura).leftKey = ALLEGRO_KEY_A;
+  (*homura).rightKey = ALLEGRO_KEY_D;
+  (*homura).attack1Key = ALLEGRO_KEY_Q;
+  (*homura).attack2Key = ALLEGRO_KEY_E;
 
   (*homura).x = 100;
   (*homura).y = 400;
   (*homura).animationDirection = 0;
 
   (*homura).velX = 5;
+  (*homura).velY = 5;
   (*homura).dirX = 0;
   (*homura).dirY = 0;
 
@@ -95,18 +98,21 @@ void initializeHomura(Character *homura){
 
 void initializeMami(Character *mami){
   (*mami).life = 100;
-  (*mami).leftKey = ALLEGRO_KEY_D;
-  (*mami).rightKey = ALLEGRO_KEY_A;
-  (*mami).attack1Key = ALLEGRO_KEY_W;
-  (*mami).attack2Key = ALLEGRO_KEY_S;
+  (*mami).upKey = ALLEGRO_KEY_I;
+  (*mami).downKey = ALLEGRO_KEY_K;
+  (*mami).leftKey = ALLEGRO_KEY_L;
+  (*mami).rightKey = ALLEGRO_KEY_J;
+  (*mami).attack1Key = ALLEGRO_KEY_U;
+  (*mami).attack2Key = ALLEGRO_KEY_O;
 
   (*mami).x = 670;
   (*mami).y = 400;
   (*mami).animationDirection = 0;
 
   (*mami).velX = 5;
+  (*mami).velY = 5;
   (*mami).dirX = 0;
-  (*mami).dirY = -1;
+  (*mami).dirY = 0;
 
   (*mami).running.heigth = 128;
   (*mami).running.width = 108;
