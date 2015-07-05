@@ -131,7 +131,7 @@ void main(int argc, int **argv){
     }
 
     if (isGameOver)
-      al_draw_text(overFont, al_map_rgb(198, 40, 40), 450, 270, ALLEGRO_ALIGN_CENTER, "GAME OVER");
+      al_draw_text(overFont, al_map_rgb(198, 40, 40), 450, 250, ALLEGRO_ALIGN_CENTER, "GAME OVER");
     al_draw_bitmap_region(homura.current_sprite.image, homura.current_sprite.curFrame * homura.current_sprite.width, 0, homura.current_sprite.width, homura.current_sprite.heigth, homura.x, homura.y, homura.animationDirection);
     al_draw_bitmap_region(mami.current_sprite.image, mami.current_sprite.curFrame * mami.current_sprite.width, 0, mami.current_sprite.width, mami.current_sprite.heigth, mami.x, mami.y, mami.animationDirection);
     al_draw_bitmap_region(cloud1.image, 0, 0, 290, 160, cloud1.x, cloud1.y, 0);
@@ -183,7 +183,7 @@ void init(){
   if (!al_init_ttf_addon() ? printf("Failed to initialize ttf!\n") : 0);
 
   lifeFont = al_load_ttf_font("fonts/pixelpoiiz.ttf", 43, 0);
-  overFont = al_load_ttf_font("fonts/pixelpoiiz.ttf", 75, 0);
+  overFont = al_load_ttf_font("fonts/ice_pixel-7.ttf", 100, 0);
 
   event_queue = al_create_event_queue();
 

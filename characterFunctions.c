@@ -84,6 +84,8 @@ void collideBullet(Character *c, Character *e){
       (*c).bullet.fired = false;
       (*e).current_sprite = (*e).hurt;
       (*e).life -= (*c).bullet.damage;
+      if ((*e).life < 0)
+        (*e).life = 0;
     }
   }
 }
