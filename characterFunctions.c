@@ -8,6 +8,8 @@ void makeAttack2(Character *c);
 void collideBullet(Character *character, Character *enemie);
 void killCharacter(Character *c);
 void animateCharacter(Character *c);
+void stopCharacter(Character *c, int key);
+void drawBullet(Character *c);
 
 void moveCharacterUp(Character *c){
   (*c).dirY = -1;
@@ -118,5 +120,23 @@ void animateCharacter(Character *c){
     (*c).y = WIDTH - 250;
   } else if ((*c).y + 130 >= WIDTH){
     (*c).y = WIDTH - 130;
+  }
+}
+
+void stopCharacter(Character *c, int key){
+  if ((key == (*c).upKey) || (key == (*c).downKey) ||
+    (key == (*c).rightKey) || (key == (*c).leftKey) ||
+    (key == (*c).attack1Key) || (key == (*c).attack2Key)){
+    (*c).current_sprite = (*c).idle;
+    (*c).dirX = 0;  
+    (*c).dirY = 0; 
+  }
+}
+
+void drawBullet(Character *c){
+  if ((*c).bullet.fired){
+    al_draw_bitmap_region((*c).bullet.image, 0, 0, (*c).bullet.heigth, (*c).bullet.width, (*c).bullet.x, (*c).bullet.y, (*c).bullet.animationDirection);
+    if ((*c).bullet.x >= 900 || (*c).bullet.x <= -17)
+      (*c).bullet.fired = false; 
   }
 }

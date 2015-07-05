@@ -88,19 +88,8 @@ void main(int argc, int **argv){
       }
 
     } else if(event.type == ALLEGRO_EVENT_KEY_UP){
-      if ((keyPressed == homura.upKey) || (keyPressed == homura.downKey) ||
-        (keyPressed == homura.rightKey) || (keyPressed == homura.leftKey) ||
-        (keyPressed == homura.attack1Key) || (keyPressed == homura.attack2Key)){
-        homura.current_sprite = homura.idle;
-        homura.dirX = 0;  
-        homura.dirY = 0;      
-      } if ((keyPressed == mami.upKey) || (keyPressed == mami.downKey) ||
-        (keyPressed == mami.rightKey) || (keyPressed == mami.leftKey) ||
-        (keyPressed == mami.attack1Key) || (keyPressed == mami.attack2Key)){
-        mami.current_sprite = mami.idle;
-        mami.dirX = 0;
-        mami.dirY = 0;
-      }       
+      stopCharacter(&homura, keyPressed);
+      stopCharacter(&mami, keyPressed);
     } else if(event.type == ALLEGRO_EVENT_TIMER) {
       animateCharacter(&homura);
       animateCharacter(&mami);
@@ -113,17 +102,8 @@ void main(int argc, int **argv){
       collideBullet(&mami, &homura);
     }
 
-    if (homura.bullet.fired){
-      al_draw_bitmap_region(homura.bullet.image, 0, 0, 12, 6, homura.bullet.x, homura.bullet.y, homura.bullet.animationDirection);
-      if (homura.bullet.x >= 900 || homura.bullet.x <= -17)
-        homura.bullet.fired = false; 
-    }
-
-    if (mami.bullet.fired){
-      al_draw_bitmap_region(mami.bullet.image, 0, 0, 14, 5, mami.bullet.x, mami.bullet.y, mami.bullet.animationDirection);
-      if (mami.bullet.x >= 900 || mami.bullet.x <= -17)
-        mami.bullet.fired = false; 
-    }
+    drawBullet(&homura);
+    drawBullet(&mami);
 
     if (mami.live){
       if (mami.life <= 0){

@@ -15,6 +15,9 @@ typedef struct {
   float x;
   float y;
 
+  int heigth;
+  int width;
+
   int dirX;
   int animationDirection;
 
