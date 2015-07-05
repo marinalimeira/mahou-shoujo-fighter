@@ -24,6 +24,9 @@ typedef struct {
   int speed;
   int damage;
   bool fired;
+  bool ready;
+
+  int releaseFrame;
 
   ALLEGRO_BITMAP *image;
 } Bullet;

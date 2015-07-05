@@ -40,14 +40,14 @@ void makeHomuraAttack1(Character *c){
       (*c).bullet.dirX = 1;
     }
     if ((*c).animationDirection == 0){
-      (*c).bullet.x = (*c).x + 96;
+      (*c).bullet.x = (*c).x + 80;
     } else {
-      (*c).bullet.x = (*c).x - 13;
+      (*c).bullet.x = (*c).x + 5;
       (*c).bullet.animationDirection = ALLEGRO_FLIP_HORIZONTAL; 
       (*c).bullet.dirX = -1;
     }
     (*c).bullet.y = (*c).y + 47;
-    (*c).bullet.fired = true;
+    (*c).bullet.ready = true;
   }
 }
 
@@ -60,14 +60,14 @@ void makeMamiAttack1(Character *c){
       (*c).bullet.dirX = -1;
     }
     if ((*c).animationDirection == 0){
-      (*c).bullet.x = (*c).x - 6;
+      (*c).bullet.x = (*c).x + 5;
     } else {
-      (*c).bullet.x = (*c).x + 27;       
+      (*c).bullet.x = (*c).x + 100;       
       (*c).bullet.animationDirection = ALLEGRO_FLIP_HORIZONTAL; 
       (*c).bullet.dirX = 1;
     }
-    (*c).bullet.y = (*c).y + 59;     
-    (*c).bullet.fired = true;
+    (*c).bullet.y = (*c).y + 60;     
+    (*c).bullet.ready = true;
   }
 }
 
@@ -146,9 +146,12 @@ void stopCharacter(Character *c, int key){
 }
 
 void drawBullet(Character *c){
-  if ((*c).bullet.fired){
-    al_draw_bitmap_region((*c).bullet.image, 0, 0, (*c).bullet.heigth, (*c).bullet.width, (*c).bullet.x, (*c).bullet.y, (*c).bullet.animationDirection);
-    if ((*c).bullet.x >= 900 || (*c).bullet.x <= -17)
-      (*c).bullet.fired = false; 
-  }
+  if (((*c).bullet.ready) && ((*c).current_sprite.curFrame == (*c).bullet.releaseFrame)){
+    (*c).bullet.fired = true;  
+    (*c).bullet.ready = false;
+  } else if ((*c).bullet.fired){
+      al_draw_bitmap_region((*c).bullet.image, 0, 0, (*c).bullet.heigth, (*c).bullet.width, (*c).bullet.x, (*c).bullet.y, (*c).bullet.animationDirection);
+      if ((*c).bullet.x >= 900 || (*c).bullet.x <= -17)
+        (*c).bullet.fired = false; 
+    }
 }

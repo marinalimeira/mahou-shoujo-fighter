@@ -85,9 +85,11 @@ void initializeHomura(Character *homura){
   (*homura).dying.image = al_load_bitmap("imgs/sprites/dying/homura_dying_by_konbe.bmp");
   al_convert_mask_to_alpha((*homura).dying.image, al_map_rgb(0, 255, 38));
 
+  (*homura).bullet.releaseFrame = 3;
   (*homura).bullet.heigth = 12; 
   (*homura).bullet.width = 6;
   (*homura).bullet.fired = false;
+  (*homura).bullet.ready = false;
   (*homura).bullet.speed = 10;
   (*homura).bullet.damage = 6;
   (*homura).bullet.dirX = 1;
@@ -182,9 +184,11 @@ void initializeMami(Character *mami){
   (*mami).dying.image = al_load_bitmap("imgs/sprites/dying/mami_dying_by_konbe.bmp");
   al_convert_mask_to_alpha((*mami).dying.image, al_map_rgb(0, 255, 38));
 
+  (*mami).bullet.releaseFrame = 5;
   (*mami).bullet.heigth = 14; 
   (*mami).bullet.width = 5;
   (*mami).bullet.fired = false;
+  (*mami).bullet.ready = false;
   (*mami).bullet.speed = 10;
   (*mami).bullet.damage = 6;
   (*mami).bullet.dirX = -1;
