@@ -6,7 +6,7 @@ void makeHomuraAttack1(Character *c);
 void makeMamiAttack1(Character *c);
 void makeAttack2(Character *c);
 void collideBullet(Character *character, Character *enemie);
-void die(Character *c);
+void killCharacter(Character *c);
 void animateCharacter(Character *c);
 
 void moveCharacterUp(Character *c){
@@ -86,7 +86,8 @@ void collideBullet(Character *c, Character *e){
   }
 }
 
-void die(Character *c){
+void killCharacter(Character *c){
+  (*c).live = false;
   (*c).current_sprite = (*c).dying;
 }
 
@@ -115,7 +116,7 @@ void animateCharacter(Character *c){
 
   if((*c).y <= WIDTH - 250){
     (*c).y = WIDTH - 250;
-  } else if ((*c).y + 155 >= WIDTH){
-    (*c).y = WIDTH - 155;
+  } else if ((*c).y + 130 >= WIDTH){
+    (*c).y = WIDTH - 130;
   }
 }

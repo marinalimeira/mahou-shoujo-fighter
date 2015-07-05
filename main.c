@@ -43,59 +43,60 @@ void main(int argc, int **argv){
   initializeCloud3(&cloud3);
 
   bool done = false;
+  int keyPressed = 0;
 
   while (!done) {
-    ALLEGRO_EVENT event;
-    
+    ALLEGRO_EVENT event;    
     al_wait_for_event(event_queue, &event);
 
     if (event.type == ALLEGRO_EVENT_DISPLAY_CLOSE) {
       done = true;
     }
 
+    keyPressed = event.keyboard.keycode;
     if (event.type == ALLEGRO_EVENT_KEY_DOWN) {
-      if (event.keyboard.keycode == ALLEGRO_KEY_ESCAPE){
+      if (keyPressed == ALLEGRO_KEY_ESCAPE){
         done = true;
-      } else if (event.keyboard.keycode == homura.upKey) {
+      } else if (keyPressed == homura.upKey) {
         moveCharacterUp(&homura);
-      } else if (event.keyboard.keycode == homura.downKey) {
+      } else if (keyPressed == homura.downKey) {
         moveCharacterDown(&homura);
-      } else if (event.keyboard.keycode == homura.leftKey) {
+      } else if (keyPressed == homura.leftKey) {
         homura.dirX = -1;
         moveCharacterLeft(&homura);
-      } else if (event.keyboard.keycode == homura.rightKey) {
+      } else if (keyPressed == homura.rightKey) {
         homura.dirX = 1;
         moveCharacterRight(&homura);
-      } else if (event.keyboard.keycode == homura.attack1Key) {
+      } else if (keyPressed == homura.attack1Key) {
         makeHomuraAttack1(&homura);
-      } else if (event.keyboard.keycode == homura.attack2Key) {
+      } else if (keyPressed == homura.attack2Key) {
         makeAttack2(&homura);
-      } else if (event.keyboard.keycode == mami.upKey) {
+      } else if (keyPressed == mami.upKey) {
         moveCharacterUp(&mami);
-      } else if (event.keyboard.keycode == mami.downKey) {
+      } else if (keyPressed == mami.downKey) {
         moveCharacterDown(&mami);
-      } else if (event.keyboard.keycode == mami.leftKey) {
+      } else if (keyPressed == mami.leftKey) {
         mami.dirX = 1;
         moveCharacterLeft(&mami);
-      } else if (event.keyboard.keycode == mami.rightKey) {
+      } else if (keyPressed == mami.rightKey) {
         mami.dirX = -1;
         moveCharacterRight(&mami);
-      } else if (event.keyboard.keycode == mami.attack1Key) {
+      } else if (keyPressed == mami.attack1Key) {
         makeMamiAttack1(&mami);
-      } else if (event.keyboard.keycode == mami.attack2Key) {
+      } else if (keyPressed == mami.attack2Key) {
         makeAttack2(&mami);
       }
 
     } else if(event.type == ALLEGRO_EVENT_KEY_UP){
-      if ((event.keyboard.keycode == homura.upKey) || (event.keyboard.keycode == homura.downKey) ||
-        (event.keyboard.keycode == homura.rightKey) || (event.keyboard.keycode == homura.leftKey) ||
-        (event.keyboard.keycode == homura.attack1Key) || (event.keyboard.keycode == homura.attack2Key)){
+      if ((keyPressed == homura.upKey) || (keyPressed == homura.downKey) ||
+        (keyPressed == homura.rightKey) || (keyPressed == homura.leftKey) ||
+        (keyPressed == homura.attack1Key) || (keyPressed == homura.attack2Key)){
         homura.current_sprite = homura.idle;
         homura.dirX = 0;  
         homura.dirY = 0;      
-      } if ((event.keyboard.keycode == mami.upKey) || (event.keyboard.keycode == mami.downKey) ||
-        (event.keyboard.keycode == mami.rightKey) || (event.keyboard.keycode == mami.leftKey) ||
-        (event.keyboard.keycode == mami.attack1Key) || (event.keyboard.keycode == mami.attack2Key)){
+      } if ((keyPressed == mami.upKey) || (keyPressed == mami.downKey) ||
+        (keyPressed == mami.rightKey) || (keyPressed == mami.leftKey) ||
+        (keyPressed == mami.attack1Key) || (keyPressed == mami.attack2Key)){
         mami.current_sprite = mami.idle;
         mami.dirX = 0;
         mami.dirY = 0;
@@ -124,11 +125,18 @@ void main(int argc, int **argv){
         mami.bullet.fired = false; 
     }
 
-    if (mami.life <= 0)
-      die(&mami);
-    if (homura.life <= 0)
-      die(&homura);
-    
+    if (mami.live){
+      if (mami.life <= 0){
+        killCharacter(&mami);
+      }
+    }
+
+    if (homura.live){
+      if (homura.life <= 0){
+        killCharacter(&homura);
+      }
+    }
+
     al_draw_bitmap_region(homura.current_sprite.image, homura.current_sprite.curFrame * homura.current_sprite.width, 0, homura.current_sprite.width, homura.current_sprite.heigth, homura.x, homura.y, homura.animationDirection);
     al_draw_bitmap_region(mami.current_sprite.image, mami.current_sprite.curFrame * mami.current_sprite.width, 0, mami.current_sprite.width, mami.current_sprite.heigth, mami.x, mami.y, mami.animationDirection);
     al_draw_bitmap_region(cloud1.image, 0, 0, 290, 160, cloud1.x, cloud1.y, 0);

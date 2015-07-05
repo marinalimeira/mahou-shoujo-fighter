@@ -35,6 +35,7 @@ typedef struct {
   int attack2Key;
 
   int life;
+  bool live;
 
   float x;
   float y;
