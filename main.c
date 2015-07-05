@@ -60,34 +60,40 @@ void main(int argc, int **argv){
       if (event.type == ALLEGRO_EVENT_KEY_DOWN) {
         if (keyPressed == ALLEGRO_KEY_ESCAPE){
           done = true;
-        } else if (keyPressed == homura.upKey) {
-          moveCharacterUp(&homura);
-        } else if (keyPressed == homura.downKey) {
-          moveCharacterDown(&homura);
-        } else if (keyPressed == homura.leftKey) {
-          homura.dirX = -1;
-          moveCharacterLeft(&homura);
-        } else if (keyPressed == homura.rightKey) {
-          homura.dirX = 1;
-          moveCharacterRight(&homura);
-        } else if (keyPressed == homura.attack1Key) {
-          makeHomuraAttack1(&homura);
-        } else if (keyPressed == homura.attack2Key) {
-          makeAttack2(&homura);
-        } else if (keyPressed == mami.upKey) {
-          moveCharacterUp(&mami);
-        } else if (keyPressed == mami.downKey) {
-          moveCharacterDown(&mami);
-        } else if (keyPressed == mami.leftKey) {
-          mami.dirX = 1;
-          moveCharacterLeft(&mami);
-        } else if (keyPressed == mami.rightKey) {
-          mami.dirX = -1;
-          moveCharacterRight(&mami);
-        } else if (keyPressed == mami.attack1Key) {
-          makeMamiAttack1(&mami);
-        } else if (keyPressed == mami.attack2Key) {
-          makeAttack2(&mami);
+        } 
+        if (!homura.current_sprite.limited){
+          if (keyPressed == homura.upKey) {
+            moveCharacterUp(&homura);
+          } else if (keyPressed == homura.downKey) {
+            moveCharacterDown(&homura);
+          } else if (keyPressed == homura.leftKey) {
+            homura.dirX = -1;
+            moveCharacterLeft(&homura);
+          } else if (keyPressed == homura.rightKey) {
+            homura.dirX = 1;
+            moveCharacterRight(&homura);
+          } else if (keyPressed == homura.attack1Key) {
+            makeHomuraAttack1(&homura);
+          } else if (keyPressed == homura.attack2Key) {
+            makeAttack2(&homura);
+          } 
+        }
+        if (!mami.current_sprite.limited){
+          if (keyPressed == mami.upKey) {
+            moveCharacterUp(&mami);
+          } else if (keyPressed == mami.downKey) {
+            moveCharacterDown(&mami);
+          } else if (keyPressed == mami.leftKey) {
+            mami.dirX = 1;
+            moveCharacterLeft(&mami);
+          } else if (keyPressed == mami.rightKey) {
+            mami.dirX = -1;
+            moveCharacterRight(&mami);
+          } else if (keyPressed == mami.attack1Key) {
+            makeMamiAttack1(&mami);
+          } else if (keyPressed == mami.attack2Key) {
+            makeAttack2(&mami);
+          }
         }
       } else if(event.type == ALLEGRO_EVENT_KEY_UP){
         stopCharacter(&homura, keyPressed);

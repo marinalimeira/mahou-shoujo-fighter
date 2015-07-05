@@ -91,6 +91,8 @@ void collideBullet(Character *c, Character *e){
 void killCharacter(Character *c){
   (*c).live = false;
   (*c).current_sprite = (*c).dying;
+  (*c).dirX = 0;  
+  (*c).dirY = 0; 
 }
 
 void animateCharacter(Character *c){
@@ -99,7 +101,7 @@ void animateCharacter(Character *c){
     if ((*c).live){
       if(++(*c).current_sprite.curFrame >= (*c).current_sprite.maxFrame){
         (*c).current_sprite.curFrame = 0;
-        if (((*c).current_sprite.limited) && ((*c).live)){
+        if ((*c).current_sprite.limited){
           (*c).current_sprite = (*c).idle;
         }
       } else if ((*c).current_sprite.curFrame <= 0)
@@ -132,9 +134,9 @@ void animateCharacter(Character *c){
 }
 
 void stopCharacter(Character *c, int key){
-  if ((key == (*c).upKey) || (key == (*c).downKey) ||
-    (key == (*c).rightKey) || (key == (*c).leftKey) ||
-    (key == (*c).attack1Key) || (key == (*c).attack2Key)){
+  if (((key == (*c).upKey) || (key == (*c).downKey) || (key == (*c).rightKey) ||
+    (key == (*c).leftKey) || (key == (*c).attack1Key) || (key == (*c).attack2Key))
+    && (!(*c).current_sprite.limited)){
     (*c).current_sprite = (*c).idle;
     (*c).dirX = 0;  
     (*c).dirY = 0; 
