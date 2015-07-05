@@ -66,7 +66,7 @@ void makeMamiAttack1(Character *c){
       (*c).bullet.animationDirection = ALLEGRO_FLIP_HORIZONTAL; 
       (*c).bullet.dirX = 1;
     }
-    (*c).bullet.y = (*c).y + 55;     
+    (*c).bullet.y = (*c).y + 59;     
     (*c).bullet.fired = true;
   }
 }
@@ -95,14 +95,22 @@ void killCharacter(Character *c){
 
 void animateCharacter(Character *c){
   if(++(*c).current_sprite.frameCount >= (*c).current_sprite.frameDelay) {
-    if(++(*c).current_sprite.curFrame >= (*c).current_sprite.maxFrame){
-      (*c).current_sprite.curFrame = 0;
-       if ((*c).current_sprite.limited)
-        (*c).current_sprite = (*c).idle;
-    } else if ((*c).current_sprite.curFrame <= 0)
-      (*c).current_sprite.curFrame = (*c).current_sprite.maxFrame - 1;
+    
+    if ((*c).live){
+      if(++(*c).current_sprite.curFrame >= (*c).current_sprite.maxFrame){
+        (*c).current_sprite.curFrame = 0;
+        if (((*c).current_sprite.limited) && ((*c).live)){
+          (*c).current_sprite = (*c).idle;
+        }
+      } else if ((*c).current_sprite.curFrame <= 0)
+        (*c).current_sprite.curFrame = (*c).current_sprite.maxFrame - 1;      
 
-    (*c).current_sprite.frameCount = 0;
+     (*c).current_sprite.frameCount = 0;
+    } else {
+      if ((*c).current_sprite.curFrame < (*c).current_sprite.maxFrame - 1){
+        (*c).current_sprite.curFrame++;
+      }
+    }
   }
 
   (*c).x += (*c).velX * (*c).dirX;
