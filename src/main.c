@@ -17,145 +17,129 @@ ALLEGRO_TIMER *timer = NULL;
 ALLEGRO_SAMPLE *main_song = NULL;
 ALLEGRO_FONT *lifeFont = NULL;
 ALLEGRO_FONT *overFont = NULL;
+ALLEGRO_BITMAP *start = NULL;
+ALLEGRO_BITMAP *scores = NULL;
+ALLEGRO_BITMAP *settings = NULL;
+ALLEGRO_BITMAP *ex1t = NULL;
+ALLEGRO_MOUSE_STATE *state = NULL;
+
+ALLEGRO_BITMAP *start_selected = NULL;
+ALLEGRO_BITMAP *scores_selected = NULL;
+ALLEGRO_BITMAP *settings_selected = NULL;
+ALLEGRO_BITMAP *ex1t_selected = NULL;
+
+ALLEGRO_BITMAP *start_not_selected = NULL;
+ALLEGRO_BITMAP *scores_not_selected = NULL;
+ALLEGRO_BITMAP *settings_not_selected = NULL;
+ALLEGRO_BITMAP *ex1t_not_selected = NULL;
+
+
 
 #include "character.h"
 #include "initializeCharacters.c"
 #include "characterFunctions.c"
 #include "initializeClouds.c"
 #include "cloudFunctions.c"
+#include "gameMain.c"
 
 void init();
 
-void main(int argc, int **argv){
+void main() {
   init();
 
-  Character homura;
-  Character mami;
+  start = al_load_bitmap("imgs/menu-itens/start.bmp");
+  al_convert_mask_to_alpha(start, al_map_rgb(0, 255, 38));
 
-  initializeHomura(&homura);
-  initializeMami(&mami);
+  scores = al_load_bitmap("imgs/menu-itens/scores.bmp");
+  al_convert_mask_to_alpha(scores, al_map_rgb(0, 255, 38));
 
-  Cloud cloud1;
-  Cloud cloud2;
-  Cloud cloud3;
+  settings = al_load_bitmap("imgs/menu-itens/settings.bmp");
+  al_convert_mask_to_alpha(settings, al_map_rgb(0, 255, 38));
 
-  initializeCloud1(&cloud1);
-  initializeCloud2(&cloud2);
-  initializeCloud3(&cloud3);
+  ex1t = al_load_bitmap("imgs/menu-itens/exit.bmp");
+  al_convert_mask_to_alpha(ex1t, al_map_rgb(0, 255, 38));
 
-  bool done = false;
-  int keyPressed = 0;
-  bool isGameOver = false;
+  start_selected = al_load_bitmap("imgs/menu-itens/start_selected.bmp");
+  al_convert_mask_to_alpha(start_selected, al_map_rgb(0, 255, 38));
 
-  while (!done) {
+  scores_selected = al_load_bitmap("imgs/menu-itens/scores_selected.bmp");
+  al_convert_mask_to_alpha(scores_selected, al_map_rgb(0, 255, 38));
+
+  settings_selected = al_load_bitmap("imgs/menu-itens/settings_selected.bmp");
+  al_convert_mask_to_alpha(settings_selected, al_map_rgb(0, 255, 38));
+
+  ex1t_selected = al_load_bitmap("imgs/menu-itens/exit_selected.bmp");
+  al_convert_mask_to_alpha(ex1t_selected, al_map_rgb(0, 255, 38));
+
+  start_not_selected = al_load_bitmap("imgs/menu-itens/start.bmp");
+  al_convert_mask_to_alpha(start_not_selected, al_map_rgb(0, 255, 38));
+
+  scores_not_selected = al_load_bitmap("imgs/menu-itens/scores.bmp");
+  al_convert_mask_to_alpha(scores_not_selected, al_map_rgb(0, 255, 38));
+
+  settings_not_selected = al_load_bitmap("imgs/menu-itens/settings.bmp");
+  al_convert_mask_to_alpha(settings_not_selected, al_map_rgb(0, 255, 38));
+
+  ex1t_not_selected = al_load_bitmap("imgs/menu-itens/exit.bmp");
+  al_convert_mask_to_alpha(ex1t_not_selected, al_map_rgb(0, 255, 38));
+  
+  while (true) {
     ALLEGRO_EVENT event;    
     al_wait_for_event(event_queue, &event);
 
     if (event.type == ALLEGRO_EVENT_DISPLAY_CLOSE) {
-      done = true;
+      break;
     }
 
-    keyPressed = event.keyboard.keycode;
-    if (!isGameOver){
-      if (event.type == ALLEGRO_EVENT_KEY_DOWN) {
-        if (keyPressed == ALLEGRO_KEY_ESCAPE){
-          done = true;
-        } 
-        if (!homura.current_sprite.limited){
-          if (keyPressed == homura.upKey) {
-            moveCharacterUp(&homura);
-          } else if (keyPressed == homura.downKey) {
-            moveCharacterDown(&homura);
-          } else if (keyPressed == homura.leftKey) {
-            homura.dirX = -1;
-            moveCharacterLeft(&homura);
-          } else if (keyPressed == homura.rightKey) {
-            homura.dirX = 1;
-            moveCharacterRight(&homura);
-          } else if (keyPressed == homura.attack1Key) {
-            makeHomuraAttack1(&homura);
-          } else if (keyPressed == homura.attack2Key) {
-            makeAttack2(&homura);
-          } 
-        }
-        if (!mami.current_sprite.limited){
-          if (keyPressed == mami.upKey) {
-            moveCharacterUp(&mami);
-          } else if (keyPressed == mami.downKey) {
-            moveCharacterDown(&mami);
-          } else if (keyPressed == mami.leftKey) {
-            mami.dirX = 1;
-            moveCharacterLeft(&mami);
-          } else if (keyPressed == mami.rightKey) {
-            mami.dirX = -1;
-            moveCharacterRight(&mami);
-          } else if (keyPressed == mami.attack1Key) {
-            makeMamiAttack1(&mami);
-          } else if (keyPressed == mami.attack2Key) {
-            makeAttack2(&mami);
-          }
-        }
-      } else if(event.type == ALLEGRO_EVENT_KEY_UP){
-        stopCharacter(&homura, keyPressed);
-        stopCharacter(&mami, keyPressed);
-      }
+    if (event.type == ALLEGRO_EVENT_MOUSE_AXES) {
+      if (((event.mouse.x > 336) && (event.mouse.x < 336 + 228)) && 
+        ((event.mouse.y > 220) && (event.mouse.y < 220 + 50))){
+        start = start_selected;
+      } else {
+        start = start_not_selected;
+      } 
+
+      if (((event.mouse.x > 321) && (event.mouse.x < 321 + 258)) && 
+        ((event.mouse.y > 300) && (event.mouse.y < 300 + 50))){
+        scores = scores_selected;
+      } else {
+        scores = scores_not_selected;
+      } 
+
+      if (((event.mouse.x > 282) && (event.mouse.x < 282 + 355)) && 
+        ((event.mouse.y > 380) && (event.mouse.y < 380 + 50))){
+        settings = settings_selected;
+      } else {
+        settings = settings_not_selected;
+      } 
+
+      if (((event.mouse.x > 364) && (event.mouse.x < 364 + 172)) && 
+        ((event.mouse.y > 460) && (event.mouse.y < 460 + 50))){
+        ex1t = ex1t_selected;
+      } else {
+        ex1t = ex1t_not_selected;
+      } 
     }
-
-    if(event.type == ALLEGRO_EVENT_TIMER) {
-      animateCharacter(&homura);
-      animateCharacter(&mami);
-      
-      moveCloud(&cloud1);
-      moveCloud(&cloud2);
-      moveCloud(&cloud3);
-      
-      collideBullet(&homura, &mami);
-      collideBullet(&mami, &homura);
-    }
-
-    drawBullet(&homura);
-    drawBullet(&mami);
-
-    if (mami.live){
-      if (mami.life <= 0){
-        killCharacter(&mami);
-        isGameOver = true;
-      }
-    }
-
-    if (homura.live){
-      if (homura.life <= 0){
-        killCharacter(&homura);
-        isGameOver = true;
-      }
-    }
-
-    if (isGameOver)
-      al_draw_text(overFont, al_map_rgb(198, 40, 40), 450, 250, ALLEGRO_ALIGN_CENTER, "GAME OVER");
-    al_draw_bitmap_region(homura.current_sprite.image, homura.current_sprite.curFrame * homura.current_sprite.width, 0, homura.current_sprite.width, homura.current_sprite.heigth, homura.x, homura.y, homura.animationDirection);
-    al_draw_bitmap_region(mami.current_sprite.image, mami.current_sprite.curFrame * mami.current_sprite.width, 0, mami.current_sprite.width, mami.current_sprite.heigth, mami.x, mami.y, mami.animationDirection);
-    al_draw_bitmap_region(cloud1.image, 0, 0, 290, 160, cloud1.x, cloud1.y, 0);
-    al_draw_bitmap_region(cloud2.image, 0, 0, 238, 140, cloud2.x, cloud2.y, 0);
-    al_draw_bitmap_region(cloud3.image, 0, 0, 569, 247, cloud3.x, cloud3.y, 0);
-    char homu_life[5]  = "";
-    sprintf(homu_life, "%d", homura.life);
-    al_draw_text(lifeFont, al_map_rgb(74, 20, 140), 120, 10, ALLEGRO_ALIGN_RIGHT, homu_life);
-    char mami_life[5]  = "";
-    sprintf(mami_life, "%d", mami.life);
-    al_draw_text(lifeFont, al_map_rgb(249, 168, 37), 800, 10, ALLEGRO_ALIGN_LEFT, mami_life);
+    
+    al_draw_bitmap_region(start, 0, 0, 228, 50, 336, 220, 0);
+    al_draw_bitmap_region(scores, 0, 0, 258, 50, 321, 300, 0);
+    al_draw_bitmap_region(settings, 0, 0, 355, 50, 282, 380, 0);    
+    al_draw_bitmap_region(ex1t, 0, 0, 172, 50, 364, 460, 0);
     al_flip_display();
     al_draw_bitmap(background, 0, 0, 0);
   }
-
+  
   al_destroy_sample(main_song);
   al_destroy_event_queue(event_queue);
   al_destroy_display(display);  
+  
 }
 
 void init(){
   if (!al_init() ? printf("Failed to initialize Allegro.\n") : 0); 
 
   if (!al_install_keyboard() ? printf("Failed to install Keyboard.\n") : 0);
+  if (!al_install_mouse() ? printf("Failed to install Mouse.\n") : 0);
 
   if (!al_init_image_addon() ? printf("Failed to initialize add-on allegro_image.\n") : 0);
 
@@ -195,4 +179,5 @@ void init(){
   al_register_event_source(event_queue, al_get_timer_event_source(timer));
   al_register_event_source(event_queue, al_get_keyboard_event_source());
   al_register_event_source(event_queue, al_get_display_event_source(display));
+  al_register_event_source(event_queue, al_get_mouse_event_source());
 }
