@@ -1,6 +1,7 @@
 void initializeHomura(Character *homura);
 void initializeMami(Character *mami);
 
+// TODO: add function to initialize sprite, make something generic
 void initializeHomura(Character *homura){
   homura->life = 100;
   homura->upKey = ALLEGRO_KEY_W;

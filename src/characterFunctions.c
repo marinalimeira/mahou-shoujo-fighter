@@ -82,9 +82,8 @@ void makeAttack2(Character *c){
 void collideBullet(Character *c, Character *e){
   if (c->bullet.fired) {
     c->bullet.x += c->bullet.speed * c->bullet.dirX;
-    if ((((c->bullet.x >= e->x && c->bullet.dirX == 1 && (c->x < e->x)) || 
-        (c->bullet.x <= e->x + 100 && c->bullet.dirX == -1 && (c->x > e->x)))) &&
-        ((c->bullet.y >= e->y) && (c->bullet.y <= e->current_sprite.width + e->y))){
+    // this checks if direction is 1, bullet is in enemy's area, the same if direction is -1 and then checks y
+    if (((((c->bullet.dirX == 1) && (c->bullet.x >= e->x) && (c->x < e->x) && ((c->bullet.x <= e->x + e->current_sprite.width))) || ((c->bullet.dirX == -1) && (c->bullet.x <= e->x + e->current_sprite.width) && (c->x > e->x) && (c->bullet.x >= e->x)))) && ((c->bullet.y >= e->y) && (c->bullet.y <= e->current_sprite.heigth + e->y))){
       c->bullet.fired = false;
       e->current_sprite = e->hurt;
       e->dirX = 0;
