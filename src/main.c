@@ -17,24 +17,10 @@ ALLEGRO_TIMER *timer = NULL;
 ALLEGRO_SAMPLE *main_song = NULL;
 ALLEGRO_FONT *lifeFont = NULL;
 ALLEGRO_FONT *overFont = NULL;
-ALLEGRO_BITMAP *start = NULL;
-ALLEGRO_BITMAP *scores = NULL;
-ALLEGRO_BITMAP *settings = NULL;
-ALLEGRO_BITMAP *ex1t = NULL;
 ALLEGRO_MOUSE_STATE *state = NULL;
+ALLEGRO_BITMAP *cursor = NULL;
 
-ALLEGRO_BITMAP *start_selected = NULL;
-ALLEGRO_BITMAP *scores_selected = NULL;
-ALLEGRO_BITMAP *settings_selected = NULL;
-ALLEGRO_BITMAP *ex1t_selected = NULL;
-
-ALLEGRO_BITMAP *start_not_selected = NULL;
-ALLEGRO_BITMAP *scores_not_selected = NULL;
-ALLEGRO_BITMAP *settings_not_selected = NULL;
-ALLEGRO_BITMAP *ex1t_not_selected = NULL;
-
-
-
+#include "menuOptions.h"
 #include "character.h"
 #include "initializeCharacters.c"
 #include "characterFunctions.c"
@@ -46,43 +32,40 @@ void init();
 
 void main() {
   init();
+  int x;
+  int y;
 
-  start = al_load_bitmap("imgs/menu-itens/start.bmp");
-  al_convert_mask_to_alpha(start, al_map_rgb(0, 255, 38));
-
-  scores = al_load_bitmap("imgs/menu-itens/scores.bmp");
-  al_convert_mask_to_alpha(scores, al_map_rgb(0, 255, 38));
-
-  settings = al_load_bitmap("imgs/menu-itens/settings.bmp");
-  al_convert_mask_to_alpha(settings, al_map_rgb(0, 255, 38));
-
-  ex1t = al_load_bitmap("imgs/menu-itens/exit.bmp");
-  al_convert_mask_to_alpha(ex1t, al_map_rgb(0, 255, 38));
-
-  start_selected = al_load_bitmap("imgs/menu-itens/start_selected.bmp");
-  al_convert_mask_to_alpha(start_selected, al_map_rgb(0, 255, 38));
-
-  scores_selected = al_load_bitmap("imgs/menu-itens/scores_selected.bmp");
-  al_convert_mask_to_alpha(scores_selected, al_map_rgb(0, 255, 38));
-
-  settings_selected = al_load_bitmap("imgs/menu-itens/settings_selected.bmp");
-  al_convert_mask_to_alpha(settings_selected, al_map_rgb(0, 255, 38));
-
-  ex1t_selected = al_load_bitmap("imgs/menu-itens/exit_selected.bmp");
-  al_convert_mask_to_alpha(ex1t_selected, al_map_rgb(0, 255, 38));
-
-  start_not_selected = al_load_bitmap("imgs/menu-itens/start.bmp");
-  al_convert_mask_to_alpha(start_not_selected, al_map_rgb(0, 255, 38));
-
-  scores_not_selected = al_load_bitmap("imgs/menu-itens/scores.bmp");
-  al_convert_mask_to_alpha(scores_not_selected, al_map_rgb(0, 255, 38));
-
-  settings_not_selected = al_load_bitmap("imgs/menu-itens/settings.bmp");
-  al_convert_mask_to_alpha(settings_not_selected, al_map_rgb(0, 255, 38));
-
-  ex1t_not_selected = al_load_bitmap("imgs/menu-itens/exit.bmp");
-  al_convert_mask_to_alpha(ex1t_not_selected, al_map_rgb(0, 255, 38));
+  cursor = al_load_bitmap("imgs/cursor.bmp");
+  al_convert_mask_to_alpha(cursor, al_map_rgb(0, 255, 38));
   
+  MenuItem start;
+  start.selected = al_load_bitmap("imgs/menu-itens/start_selected.bmp");
+  al_convert_mask_to_alpha(start.selected, al_map_rgb(0, 255, 38));
+  start.not_selected = al_load_bitmap("imgs/menu-itens/start.bmp");
+  al_convert_mask_to_alpha(start.not_selected, al_map_rgb(0, 255, 38));
+  start.current = start.not_selected;
+
+  MenuItem scores;
+  scores.selected = al_load_bitmap("imgs/menu-itens/scores_selected.bmp");
+  al_convert_mask_to_alpha(scores.selected, al_map_rgb(0, 255, 38));
+  scores.not_selected = al_load_bitmap("imgs/menu-itens/scores.bmp");
+  al_convert_mask_to_alpha(scores.not_selected, al_map_rgb(0, 255, 38));
+  scores.current = scores.not_selected;
+  
+  MenuItem settings;
+  settings.selected = al_load_bitmap("imgs/menu-itens/settings_selected.bmp");
+  al_convert_mask_to_alpha(settings.selected, al_map_rgb(0, 255, 38));
+  settings.not_selected = al_load_bitmap("imgs/menu-itens/settings.bmp");
+  al_convert_mask_to_alpha(settings.not_selected, al_map_rgb(0, 255, 38));
+  settings.current = settings.not_selected;
+
+  MenuItem ex1t;
+  ex1t.selected = al_load_bitmap("imgs/menu-itens/exit_selected.bmp");
+  al_convert_mask_to_alpha(ex1t.selected, al_map_rgb(0, 255, 38));
+  ex1t.not_selected = al_load_bitmap("imgs/menu-itens/exit.bmp");
+  al_convert_mask_to_alpha(ex1t.not_selected, al_map_rgb(0, 255, 38));
+  ex1t.current = ex1t.not_selected;
+
   while (true) {
     ALLEGRO_EVENT event;    
     al_wait_for_event(event_queue, &event);
@@ -92,39 +75,50 @@ void main() {
     }
 
     if (event.type == ALLEGRO_EVENT_MOUSE_AXES) {
+      x = event.mouse.x;
+      y = event.mouse.y;
       if (((event.mouse.x > 336) && (event.mouse.x < 336 + 228)) && 
         ((event.mouse.y > 220) && (event.mouse.y < 220 + 50))){
-        start = start_selected;
+        start.current = start.selected;
       } else {
-        start = start_not_selected;
+        start.current = start.not_selected;
       } 
 
       if (((event.mouse.x > 321) && (event.mouse.x < 321 + 258)) && 
         ((event.mouse.y > 300) && (event.mouse.y < 300 + 50))){
-        scores = scores_selected;
+        scores.current = scores.selected;
       } else {
-        scores = scores_not_selected;
+        scores.current = scores.not_selected;
       } 
 
       if (((event.mouse.x > 282) && (event.mouse.x < 282 + 355)) && 
         ((event.mouse.y > 380) && (event.mouse.y < 380 + 50))){
-        settings = settings_selected;
+        settings.current = settings.selected;
       } else {
-        settings = settings_not_selected;
+        settings.current = settings.not_selected;
       } 
 
       if (((event.mouse.x > 364) && (event.mouse.x < 364 + 172)) && 
         ((event.mouse.y > 460) && (event.mouse.y < 460 + 50))){
-        ex1t = ex1t_selected;
+        ex1t.current = ex1t.selected;
       } else {
-        ex1t = ex1t_not_selected;
+        ex1t.current = ex1t.not_selected;
       } 
     }
+
+    if (event.type == ALLEGRO_EVENT_MOUSE_BUTTON_DOWN)  {
+      if (((event.mouse.x > 336) && (event.mouse.x < 336 + 228)) && 
+        ((event.mouse.y > 220) && (event.mouse.y < 220 + 50))){
+        gameMain();
+      } 
+    }
+
     
-    al_draw_bitmap_region(start, 0, 0, 228, 50, 336, 220, 0);
-    al_draw_bitmap_region(scores, 0, 0, 258, 50, 321, 300, 0);
-    al_draw_bitmap_region(settings, 0, 0, 355, 50, 282, 380, 0);    
-    al_draw_bitmap_region(ex1t, 0, 0, 172, 50, 364, 460, 0);
+    al_draw_bitmap_region(start.current, 0, 0, 228, 50, 336, 220, 0);
+    al_draw_bitmap_region(scores.current, 0, 0, 258, 50, 321, 300, 0);
+    al_draw_bitmap_region(settings.current, 0, 0, 355, 50, 282, 380, 0);    
+    al_draw_bitmap_region(ex1t.current, 0, 0, 172, 50, 364, 460, 0);
+    al_draw_bitmap_region(cursor, 0, 0, 35, 35, x, y, 0);
     al_flip_display();
     al_draw_bitmap(background, 0, 0, 0);
   }
@@ -174,8 +168,9 @@ void init(){
   timer = al_create_timer(1.0 / FPS);
   al_start_timer(timer);
 
-  al_set_window_title(display, "｡＾･ｪ･＾｡");
-
+  al_set_window_title(display, "Mahou Shoujo Fighter");
+  al_hide_mouse_cursor(display);
+  
   al_register_event_source(event_queue, al_get_timer_event_source(timer));
   al_register_event_source(event_queue, al_get_keyboard_event_source());
   al_register_event_source(event_queue, al_get_display_event_source(display));
