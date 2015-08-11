@@ -32,8 +32,8 @@ void init();
 
 void main() {
   init();
-  int x;
-  int y;
+  
+  int current = 1;
 
   cursor = al_load_bitmap("imgs/cursor.bmp");
   al_convert_mask_to_alpha(cursor, al_map_rgb(0, 255, 38));
@@ -74,43 +74,41 @@ void main() {
       break;
     }
 
-    if (event.type == ALLEGRO_EVENT_MOUSE_AXES) {
-      x = event.mouse.x;
-      y = event.mouse.y;
-      if (((event.mouse.x > 336) && (event.mouse.x < 336 + 228)) && 
-        ((event.mouse.y > 220) && (event.mouse.y < 220 + 50))){
-        start.current = start.selected;
-      } else {
-        start.current = start.not_selected;
-      } 
-
-      if (((event.mouse.x > 321) && (event.mouse.x < 321 + 258)) && 
-        ((event.mouse.y > 300) && (event.mouse.y < 300 + 50))){
-        scores.current = scores.selected;
-      } else {
-        scores.current = scores.not_selected;
-      } 
-
-      if (((event.mouse.x > 282) && (event.mouse.x < 282 + 355)) && 
-        ((event.mouse.y > 380) && (event.mouse.y < 380 + 50))){
-        settings.current = settings.selected;
-      } else {
-        settings.current = settings.not_selected;
-      } 
-
-      if (((event.mouse.x > 364) && (event.mouse.x < 364 + 172)) && 
-        ((event.mouse.y > 460) && (event.mouse.y < 460 + 50))){
-        ex1t.current = ex1t.selected;
-      } else {
-        ex1t.current = ex1t.not_selected;
-      } 
+    if (event.type == ALLEGRO_EVENT_KEY_DOWN) {
+      if (event.keyboard.keycode == ALLEGRO_KEY_DOWN){
+        if (current >= 4){
+          current = 1;
+        } else {
+          current++;
+        }
+      } else if (event.keyboard.keycode == ALLEGRO_KEY_UP){
+        if (current == 1){
+          current = 4;
+        } else {
+          current--;
+        }
+      }
     }
 
-    if (event.type == ALLEGRO_EVENT_MOUSE_BUTTON_DOWN)  {
-      if (((event.mouse.x > 336) && (event.mouse.x < 336 + 228)) && 
-        ((event.mouse.y > 220) && (event.mouse.y < 220 + 50))){
-        gameMain();
-      } 
+    if (current == 1){
+      start.current = start.selected;
+    } else {
+      start.current = start.not_selected;
+    }
+    if (current == 2){
+      scores.current = scores.selected;
+    } else {
+      scores.current = scores.not_selected;
+    }
+    if (current == 3){
+      settings.current = settings.selected;
+    } else {
+      settings.current = settings.not_selected;
+    }
+    if (current == 4){
+      ex1t.current = ex1t.selected;
+    } else {
+      ex1t.current = ex1t.not_selected;
     }
 
     
@@ -118,7 +116,6 @@ void main() {
     al_draw_bitmap_region(scores.current, 0, 0, 258, 50, 321, 300, 0);
     al_draw_bitmap_region(settings.current, 0, 0, 355, 50, 282, 380, 0);    
     al_draw_bitmap_region(ex1t.current, 0, 0, 172, 50, 364, 460, 0);
-    al_draw_bitmap_region(cursor, 0, 0, 35, 35, x, y, 0);
     al_flip_display();
     al_draw_bitmap(background, 0, 0, 0);
   }
@@ -133,8 +130,7 @@ void init(){
   if (!al_init() ? printf("Failed to initialize Allegro.\n") : 0); 
 
   if (!al_install_keyboard() ? printf("Failed to install Keyboard.\n") : 0);
-  if (!al_install_mouse() ? printf("Failed to install Mouse.\n") : 0);
-
+ 
   if (!al_init_image_addon() ? printf("Failed to initialize add-on allegro_image.\n") : 0);
 
   display = al_create_display(HEIGHT, WIDTH);
@@ -169,10 +165,8 @@ void init(){
   al_start_timer(timer);
 
   al_set_window_title(display, "Mahou Shoujo Fighter");
-  al_hide_mouse_cursor(display);
   
   al_register_event_source(event_queue, al_get_timer_event_source(timer));
   al_register_event_source(event_queue, al_get_keyboard_event_source());
   al_register_event_source(event_queue, al_get_display_event_source(display));
-  al_register_event_source(event_queue, al_get_mouse_event_source());
 }
