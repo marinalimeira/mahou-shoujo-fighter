@@ -87,6 +87,12 @@ void main() {
         } else {
           current--;
         }
+      } else if (event.keyboard.keycode == ALLEGRO_KEY_ENTER){
+        if (current == 1){
+          gameMain();
+        } else if (current == 4){
+          break;
+        }
       }
     }
 
@@ -110,7 +116,6 @@ void main() {
     } else {
       ex1t.current = ex1t.not_selected;
     }
-
     
     al_draw_bitmap_region(start.current, 0, 0, 228, 50, 336, 220, 0);
     al_draw_bitmap_region(scores.current, 0, 0, 258, 50, 321, 300, 0);
