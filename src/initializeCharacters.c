@@ -199,3 +199,23 @@ void initializeMami(Character *mami){
 
   mami->current_sprite = mami->idle;
 }
+
+void initializeKyubey(Character *kyubey){
+  kyubey->live = true;
+  kyubey->x = 70;
+  kyubey->y = 500;
+  kyubey->animationDirection = 0;
+
+  kyubey->idle.heigth = 38;
+  kyubey->idle.width = 96;
+  kyubey->idle.maxFrame = 11;
+  kyubey->idle.curFrame = 0;
+  kyubey->idle.frameCount = 0;
+  kyubey->idle.frameDelay = 2;
+  kyubey->idle.limited = false;
+
+  kyubey->idle.image = al_load_bitmap("imgs/sprites/idle/kyubey_idle_by_konbe.bmp");
+  al_convert_mask_to_alpha(kyubey->idle.image, al_map_rgb(0, 255, 38));
+
+  kyubey->current_sprite = kyubey->idle;
+}

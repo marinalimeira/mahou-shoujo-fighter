@@ -32,12 +32,13 @@ void init();
 
 void main() {
   init();
+
+  Character kyubey;
+
+  initializeKyubey(&kyubey);
   
   int current = 1;
-
-  cursor = al_load_bitmap("imgs/cursor.bmp");
-  al_convert_mask_to_alpha(cursor, al_map_rgb(0, 255, 38));
-  
+ 
   MenuItem start;
   start.selected = al_load_bitmap("imgs/menu-itens/start_selected.bmp");
   al_convert_mask_to_alpha(start.selected, al_map_rgb(0, 255, 38));
@@ -116,7 +117,12 @@ void main() {
     } else {
       ex1t.current = ex1t.not_selected;
     }
+
+    if(event.type == ALLEGRO_EVENT_TIMER) {
+      animateCharacter(&kyubey);
+    }
     
+    al_draw_bitmap_region(kyubey.current_sprite.image, kyubey.current_sprite.curFrame * kyubey.current_sprite.width, 0, kyubey.current_sprite.width, kyubey.current_sprite.heigth, kyubey.x, kyubey.y, kyubey.animationDirection);
     al_draw_bitmap_region(start.current, 0, 0, 228, 50, 336, 220, 0);
     al_draw_bitmap_region(scores.current, 0, 0, 258, 50, 321, 300, 0);
     al_draw_bitmap_region(settings.current, 0, 0, 355, 50, 282, 380, 0);    
@@ -141,7 +147,7 @@ void init(){
   display = al_create_display(HEIGHT, WIDTH);
   if (!display ? printf("Failed to create display.\n") : 0);
 
-  background = al_load_bitmap("imgs/bg.bmp");
+  background = al_load_bitmap("imgs/bg-menu.bmp");
   al_draw_bitmap(background, 0, 0, 0);
 
   if (!background ? printf("Fail to load background.\n") : 0);

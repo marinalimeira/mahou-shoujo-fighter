@@ -1,4 +1,8 @@
+// TODO: when game ends, back to main menu, or a new menu
+
 void gameMain(){ //int argc, int **argv
+  background = al_load_bitmap("imgs/bg.bmp");
+  
   Character homura;
   Character mami;
 
@@ -16,7 +20,7 @@ void gameMain(){ //int argc, int **argv
   bool done = false;
   int keyPressed = 0;
   bool isGameOver = false;
-
+  
   while (!done) {
     ALLEGRO_EVENT event;    
     al_wait_for_event(event_queue, &event);
