@@ -12,11 +12,13 @@
 
 ALLEGRO_DISPLAY *display = NULL;
 ALLEGRO_BITMAP *background = NULL;
+ALLEGRO_BITMAP *header = NULL;
 ALLEGRO_EVENT_QUEUE *event_queue = NULL;
 ALLEGRO_TIMER *timer = NULL;
 ALLEGRO_SAMPLE *main_song = NULL;
 ALLEGRO_FONT *lifeFont = NULL;
 ALLEGRO_FONT *overFont = NULL;
+ALLEGRO_FONT *boxyFont = NULL;
 ALLEGRO_MOUSE_STATE *state = NULL;
 ALLEGRO_BITMAP *cursor = NULL;
 
@@ -32,8 +34,12 @@ void init();
 void main() {
   init();
 
+  Character homura;
+  Character mami;
   Character kyubey;
 
+  initializeHomura(&homura);
+  initializeMami(&mami);
   initializeKyubey(&kyubey);
 
   int current = 1;
@@ -92,12 +98,8 @@ void main() {
           // TODO: when game ends, back to main menu, or a new menu
 
           background = al_load_bitmap("imgs/bg.bmp");
-
-          Character homura;
-          Character mami;
-
-          initializeHomura(&homura);
-          initializeMami(&mami);
+          header = al_load_bitmap("imgs/header.bmp");
+          al_convert_mask_to_alpha(header, al_map_rgb(0, 255, 38));
 
           Cloud cloud1;
           Cloud cloud2;
@@ -211,13 +213,23 @@ void main() {
             al_draw_text(lifeFont, al_map_rgb(249, 168, 37), 800, 10, ALLEGRO_ALIGN_LEFT, mami_life);
             al_flip_display();
             al_draw_bitmap(background, 0, 0, 0);
+            al_draw_bitmap(header, 0, 0, 0);
           }
 
           al_destroy_sample(main_song);
           al_destroy_event_queue(event_queue);
           al_destroy_display(display);
 
-        } else if (current == 4){
+        } else if (current == 3){
+          while (1){
+            /* al_draw_text(boxyFont, al_map_rgb(74, 20, 140), 120, 10, ALLEGRO_ALIGN_RIGHT, "Music"); */
+              al_draw_text(overFont, al_map_rgb(255, 255, 255), 450, 250, ALLEGRO_ALIGN_CENTER, "Music");
+              al_draw_text(overFont, al_map_rgb(255, 255, 255), 450, 150, ALLEGRO_ALIGN_CENTER, "Change Keys");
+            al_flip_display();
+            al_draw_bitmap(background, 0, 0, 0);
+          }
+        }
+        else if (current == 4){
           break;
         }
       }
@@ -277,6 +289,7 @@ void init(){
   background = al_load_bitmap("imgs/bg-menu.bmp");
   al_draw_bitmap(background, 0, 0, 0);
 
+
   if (!background ? printf("Fail to load background.\n") : 0);
 
   if(!al_install_audio() ? printf("Failed to initialize audio!\n") : 0);
@@ -296,6 +309,7 @@ void init(){
 
   lifeFont = al_load_ttf_font("fonts/pixelpoiiz.ttf", 43, 0);
   overFont = al_load_ttf_font("fonts/ice_pixel-7.ttf", 100, 0);
+  boxyFont = al_load_ttf_font("fonts/boxy_bold.ttf", 100, 0);
 
   event_queue = al_create_event_queue();
 
