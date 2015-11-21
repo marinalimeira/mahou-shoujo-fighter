@@ -14,6 +14,7 @@ void animateCharacter(Character *c);
 void killCharacter(Character *c);
 void stopCharacter(Character *c, int key);
 
+int checkEnd(Character *h, Character *m, int t);
 
 void moveCharacterUp(Character *c){
   c->dirY = -1;
@@ -157,4 +158,34 @@ void drawBullet(Character *c){
     if (c->bullet.x >= 900 || c->bullet.x <= -17)
       c->bullet.fired = false;
   }
+}
+
+int checkEnd(Character *h, Character *m, int t){
+  int win = 0;
+
+  if (m->live){
+    if (m->life <= 0){
+      killCharacter(m);
+      win= 2;
+    }
+  }
+
+  if (h->live) {
+    if (h->life <= 0){
+      killCharacter(h);
+      win= 1;
+    }
+  }
+
+  if (t/20 >= 5){
+    if (h->life > m->life){
+      killCharacter(m);
+      win= 1;
+    } else {
+      killCharacter(h);
+      win= 2;
+    }
+  }
+
+  return win;
 }

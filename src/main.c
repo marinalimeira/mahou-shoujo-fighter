@@ -16,10 +16,9 @@ ALLEGRO_BITMAP *header = NULL;
 ALLEGRO_EVENT_QUEUE *event_queue = NULL;
 ALLEGRO_TIMER *timer = NULL;
 ALLEGRO_SAMPLE *main_song = NULL;
-ALLEGRO_FONT *lifeFont = NULL;
-ALLEGRO_FONT *overFont = NULL;
-ALLEGRO_FONT *boxyFont = NULL;
-ALLEGRO_FONT *boxy2 = NULL;
+ALLEGRO_FONT *arcadeFont = NULL;
+ALLEGRO_FONT *grafitiFont = NULL;
+ALLEGRO_FONT *boxy_bold = NULL;
 ALLEGRO_MOUSE_STATE *state = NULL;
 ALLEGRO_BITMAP *cursor = NULL;
 
@@ -40,18 +39,17 @@ void menu(Character homura, Character mami);
 void main() {
   init();
 
-  Character mami = EmptyStruct;
-  Character homura = EmptyStruct;
+  Character homura;
+  Character mami;
 
-  initializeMami(&mami);
   initializeHomura(&homura);
+  initializeMami(&mami);
 
   menu(homura, mami);
 
   al_destroy_sample(main_song);
   al_destroy_event_queue(event_queue);
   al_destroy_display(display);
-
 }
 
 void init(){
@@ -84,12 +82,9 @@ void init(){
   al_init_font_addon();
   if (!al_init_ttf_addon() ? printf("Failed to initialize ttf!\n") : 0);
 
-  lifeFont = al_load_ttf_font("fonts/pixelpoiiz.ttf", 43, 0);
-  boxy2 = al_load_ttf_font("fonts/pixelpoiiz.ttf", 43, 0);
-  overFont = al_load_ttf_font("fonts/ice_pixel-7.ttf", 100, 0);
-  /* overFont = al_load_ttf_font("fonts/ice_pixel-7.ttf", 100, 0); */
-  boxyFont = al_load_ttf_font("fonts/boxy_bold.ttf", 100, 0);
-  /* boxy2 = al_load_ttf_font("fonts/boxy_bold.ttf", 50, 0); */
+  arcadeFont = al_load_ttf_font("fonts/arcadepix.ttf", 43, 0);
+  grafitiFont = al_load_ttf_font("fonts/grafiti.ttf", 100, 0);
+  boxy_bold = al_load_ttf_font("fonts/boxy_bold.ttf", 100, 0);
 
   event_queue = al_create_event_queue();
 
@@ -104,10 +99,9 @@ void init(){
 }
 
 void mainGame(Character homura, Character mami){
-  // TODO: when game ends, back to main menu, or a new menu
   FILE *arq = fopen("scores", "a+");
-  if (arq==NULL){
-  }
+  /* if (arq==NULL){ */
+  /* } */
   background = al_load_bitmap("imgs/bg.bmp");
   header = al_load_bitmap("imgs/header.bmp");
   al_convert_mask_to_alpha(header, al_map_rgb(0, 255, 38));
@@ -123,6 +117,8 @@ void mainGame(Character homura, Character mami){
   bool done = false;
   int keyPressed = 0;
   bool isGameOver = false;
+  int winner = 0;
+  int tempo = 0;
   char str[17];
   strcpy(str, "");
 
@@ -136,50 +132,51 @@ void mainGame(Character homura, Character mami){
 
     keyPressed = event.keyboard.keycode;
 
-    if (event.type == ALLEGRO_EVENT_KEY_DOWN) {
-      if (keyPressed == ALLEGRO_KEY_ESCAPE){
-        menu(homura, mami);
-      }
-      if (!homura.current_sprite.limited){
-        if (keyPressed == homura.upKey) {
-          moveCharacterUp(&homura);
-        } else if (keyPressed == homura.downKey) {
-          moveCharacterDown(&homura);
-        } else if (keyPressed == homura.leftKey) {
-          homura.dirX = -1;
-          moveCharacterLeft(&homura);
-        } else if (keyPressed == homura.rightKey) {
-          homura.dirX = 1;
-          moveCharacterRight(&homura);
-        } else if (keyPressed == homura.attack1Key) {
-          makeHomuraAttack1(&homura);
-        } else if (keyPressed == homura.attack2Key) {
-          makeAttack2(&homura);
-        }
-      }
-      if (!mami.current_sprite.limited){
-        if (keyPressed == mami.upKey) {
-          moveCharacterUp(&mami);
-        } else if (keyPressed == mami.downKey) {
-          moveCharacterDown(&mami);
-        } else if (keyPressed == mami.leftKey) {
-          mami.dirX = 1;
-          moveCharacterLeft(&mami);
-        } else if (keyPressed == mami.rightKey) {
-          mami.dirX = -1;
-          moveCharacterRight(&mami);
-        } else if (keyPressed == mami.attack1Key) {
-          makeMamiAttack1(&mami);
-        } else if (keyPressed == mami.attack2Key) {
-          makeAttack2(&mami);
-        }
-      }
-    } else if(event.type == ALLEGRO_EVENT_KEY_UP){
-      stopCharacter(&homura, keyPressed);
-      stopCharacter(&mami, keyPressed);
+    if (keyPressed == ALLEGRO_KEY_ESCAPE){
+      menu(homura, mami);
     }
 
-    if (isGameOver) {
+    if (!isGameOver){
+      if (event.type == ALLEGRO_EVENT_KEY_DOWN) {
+        if (!homura.current_sprite.limited){
+          if (keyPressed == homura.upKey) {
+            moveCharacterUp(&homura);
+          } else if (keyPressed == homura.downKey) {
+            moveCharacterDown(&homura);
+          } else if (keyPressed == homura.leftKey) {
+            homura.dirX = -1;
+            moveCharacterLeft(&homura);
+          } else if (keyPressed == homura.rightKey) {
+            homura.dirX = 1;
+            moveCharacterRight(&homura);
+          } else if (keyPressed == homura.attack1Key) {
+            makeHomuraAttack1(&homura);
+          } else if (keyPressed == homura.attack2Key) {
+            makeAttack2(&homura);
+          }
+        }
+        if (!mami.current_sprite.limited){
+          if (keyPressed == mami.upKey) {
+            moveCharacterUp(&mami);
+          } else if (keyPressed == mami.downKey) {
+            moveCharacterDown(&mami);
+          } else if (keyPressed == mami.leftKey) {
+            mami.dirX = 1;
+            moveCharacterLeft(&mami);
+          } else if (keyPressed == mami.rightKey) {
+            mami.dirX = -1;
+            moveCharacterRight(&mami);
+          } else if (keyPressed == mami.attack1Key) {
+            makeMamiAttack1(&mami);
+          } else if (keyPressed == mami.attack2Key) {
+            makeAttack2(&mami);
+          }
+        }
+      } else if(event.type == ALLEGRO_EVENT_KEY_UP){
+        stopCharacter(&homura, keyPressed);
+        stopCharacter(&mami, keyPressed);
+      }
+    } else {
       if (event.type == ALLEGRO_EVENT_KEY_CHAR){
         char temp[] = {event.keyboard.unichar, '\0'};
         if (event.keyboard.unichar == ' ') {
@@ -199,60 +196,63 @@ void mainGame(Character homura, Character mami){
           fputs("\n", arq);
           fputs(str, arq);
           fclose (arq);
+          menu(homura, mami);
         }
+        printf("oi");
       }
-  }
-
-  if(event.type == ALLEGRO_EVENT_TIMER) {
-    animateCharacter(&homura);
-    animateCharacter(&mami);
-
-    moveCloud(&cloud1);
-    moveCloud(&cloud2);
-    moveCloud(&cloud3);
-
-    collideBullet(&homura, &mami);
-    collideBullet(&mami, &homura);
-  }
-
-  drawBullet(&homura);
-  drawBullet(&mami);
-
-  if (mami.live){
-    if (mami.life <= 0){
-      killCharacter(&mami);
-      isGameOver = true;
     }
-  }
 
-  if (homura.live){
-    if (homura.life <= 0){
-      killCharacter(&homura);
-      isGameOver = true;
+    if(event.type == ALLEGRO_EVENT_TIMER) {
+      if (!isGameOver)
+        tempo++;
+
+      animateCharacter(&homura);
+      animateCharacter(&mami);
+
+      moveCloud(&cloud1);
+      moveCloud(&cloud2);
+      moveCloud(&cloud3);
+
+      collideBullet(&homura, &mami);
+      collideBullet(&mami, &homura);
     }
-  }
 
-  al_draw_bitmap_region(homura.current_sprite.image, homura.current_sprite.curFrame * homura.current_sprite.width,
-      0, homura.current_sprite.width, homura.current_sprite.heigth, homura.x, homura.y, homura.animationDirection);
-  al_draw_bitmap_region(mami.current_sprite.image, mami.current_sprite.curFrame * mami.current_sprite.width, 0,
-      mami.current_sprite.width, mami.current_sprite.heigth, mami.x, mami.y, mami.animationDirection);
-  al_draw_bitmap_region(cloud1.image, 0, 0, 290, 160, cloud1.x, cloud1.y, 0);
-  al_draw_bitmap_region(cloud2.image, 0, 0, 238, 140, cloud2.x, cloud2.y, 0);
-  al_draw_bitmap_region(cloud3.image, 0, 0, 569, 247, cloud3.x, cloud3.y, 0);
-  char homu_life[5]  = "";
-  sprintf(homu_life, "%d", homura.life);
-  al_draw_text(lifeFont, al_map_rgb(74, 20, 140), 120, 10, ALLEGRO_ALIGN_RIGHT, homu_life);
-  char mami_life[5]  = "";
-  sprintf(mami_life, "%d", mami.life);
-  al_draw_text(lifeFont, al_map_rgb(249, 168, 37), 800, 10, ALLEGRO_ALIGN_LEFT, mami_life);
-  if (isGameOver) {
-    al_draw_text(overFont, al_map_rgb(198, 40, 40), 450, 250, ALLEGRO_ALIGN_CENTER, "GAME OVER");
-    al_draw_text(boxy2, al_map_rgb(198, 40, 40), 450, 350, ALLEGRO_ALIGN_CENTER, "Insert Your Name");
-    al_draw_text(boxy2, al_map_rgb(198, 20, 140), 450, 420, ALLEGRO_ALIGN_CENTER, str);
-  }
-  al_flip_display();
-  al_draw_bitmap(background, 0, 0, 0);
-  al_draw_bitmap(header, 0, 0, 0);
+    drawBullet(&homura);
+    drawBullet(&mami);
+
+    winner = checkEnd(&homura, &mami, tempo);
+    if (winner != 0)
+      isGameOver = true;
+
+    al_draw_bitmap_region(homura.current_sprite.image, homura.current_sprite.curFrame * homura.current_sprite.width,
+        0, homura.current_sprite.width, homura.current_sprite.heigth, homura.x, homura.y, homura.animationDirection);
+    al_draw_bitmap_region(mami.current_sprite.image, mami.current_sprite.curFrame * mami.current_sprite.width, 0,
+        mami.current_sprite.width, mami.current_sprite.heigth, mami.x, mami.y, mami.animationDirection);
+    al_draw_bitmap_region(cloud1.image, 0, 0, 290, 160, cloud1.x, cloud1.y, 0);
+    al_draw_bitmap_region(cloud2.image, 0, 0, 238, 140, cloud2.x, cloud2.y, 0);
+    al_draw_bitmap_region(cloud3.image, 0, 0, 569, 247, cloud3.x, cloud3.y, 0);
+    char homu_life[5]  = "";
+    sprintf(homu_life, "%d", homura.life);
+    al_draw_text(grafitiFont, al_map_rgb(74, 20, 140), 120, 10, ALLEGRO_ALIGN_RIGHT, homu_life);
+    char tempo_str[5]  = "";
+    sprintf(tempo_str, "%d", tempo/20);
+    al_draw_text(arcadeFont, al_map_rgb(255, 255, 255), 473, 25, ALLEGRO_ALIGN_RIGHT, tempo_str);
+    char mami_life[5]  = "";
+    sprintf(mami_life, "%d", mami.life);
+    al_draw_text(grafitiFont, al_map_rgb(249, 168, 37), 800, 10, ALLEGRO_ALIGN_LEFT, mami_life);
+    if (isGameOver) {
+      char win_str[]  = "";
+      char insert[]  = "Player ";
+      sprintf(win_str, "%d", winner);
+      strcat(insert, win_str);
+      al_draw_text(grafitiFont, al_map_rgb(198, 40, 40), 450, 250, ALLEGRO_ALIGN_CENTER, "GAME OVER");
+      al_draw_text(arcadeFont, al_map_rgb(96, 125, 139), 450, 350, ALLEGRO_ALIGN_CENTER, insert);
+      al_draw_text(arcadeFont, al_map_rgb(96, 125, 139), 450, 470, ALLEGRO_ALIGN_CENTER, "Insert Your Name");
+      al_draw_text(arcadeFont, al_map_rgb(96, 125, 139), 300, 520, ALLEGRO_ALIGN_CENTER, str);
+    }
+    al_flip_display();
+    al_draw_bitmap(background, 0, 0, 0);
+    al_draw_bitmap(header, 0, 0, 0);
   }
 
   al_destroy_sample(main_song);
@@ -303,13 +303,13 @@ void menu(Character homura, Character mami){
         if (current == 1){
           mainGame(homura, mami);
         }  else if (current == 2){
-          al_draw_text(overFont, al_map_rgb(255, 255, 255), 450, 150, ALLEGRO_ALIGN_CENTER, "Scores");
+          al_draw_text(grafitiFont, al_map_rgb(255, 255, 255), 450, 150, ALLEGRO_ALIGN_CENTER, "Scores");
           al_flip_display();
           al_draw_bitmap(background, 0, 0, 0);
         } else if (current == 3){
           while (1){
-            al_draw_text(overFont, al_map_rgb(255, 255, 255), 450, 250, ALLEGRO_ALIGN_CENTER, "Music");
-            al_draw_text(overFont, al_map_rgb(255, 255, 255), 450, 150, ALLEGRO_ALIGN_CENTER, "Change Keys");
+            al_draw_text(grafitiFont, al_map_rgb(255, 255, 255), 450, 250, ALLEGRO_ALIGN_CENTER, "Music");
+            al_draw_text(grafitiFont, al_map_rgb(255, 255, 255), 450, 150, ALLEGRO_ALIGN_CENTER, "Change Keys");
             al_flip_display();
             al_draw_bitmap(background, 0, 0, 0);
           }
@@ -353,6 +353,5 @@ void menu(Character homura, Character mami){
     al_draw_bitmap_region(ex1t.current, 0, 0, 172, 50, 364, 460, 0);
     al_flip_display();
     al_draw_bitmap(background, 0, 0, 0);
-
   }
 }
