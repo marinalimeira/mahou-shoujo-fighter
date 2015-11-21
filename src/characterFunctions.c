@@ -26,7 +26,7 @@ void moveCharacterDown(Character *c){
 }
 
 void moveCharacterLeft(Character *c){
-  c->animationDirection = ALLEGRO_FLIP_HORIZONTAL;  
+  c->animationDirection = ALLEGRO_FLIP_HORIZONTAL;
   c->current_sprite = c->running;
 }
 
@@ -47,7 +47,7 @@ void makeHomuraAttack1(Character *c){
       c->bullet.x = c->x + 80;
     } else {
       c->bullet.x = c->x + 5;
-      c->bullet.animationDirection = ALLEGRO_FLIP_HORIZONTAL; 
+      c->bullet.animationDirection = ALLEGRO_FLIP_HORIZONTAL;
       c->bullet.dirX = -1;
     }
     c->bullet.y = c->y + 47;
@@ -66,11 +66,11 @@ void makeMamiAttack1(Character *c){
     if (c->animationDirection == 0){
       c->bullet.x = c->x + 5;
     } else {
-      c->bullet.x = c->x + 100;       
-      c->bullet.animationDirection = ALLEGRO_FLIP_HORIZONTAL; 
+      c->bullet.x = c->x + 100;
+      c->bullet.animationDirection = ALLEGRO_FLIP_HORIZONTAL;
       c->bullet.dirX = 1;
     }
-    c->bullet.y = c->y + 60;     
+    c->bullet.y = c->y + 60;
     c->bullet.ready = true;
   }
 }
@@ -98,12 +98,12 @@ void collideBullet(Character *c, Character *e){
 void killCharacter(Character *c){
   c->live = false;
   c->current_sprite = c->dying;
-  c->dirX = 0;  
-  c->dirY = 0; 
+  c->dirX = 0;
+  c->dirY = 0;
 }
 
 void animateCharacter(Character *c){
-  if(++c->current_sprite.frameCount >= c->current_sprite.frameDelay) {    
+  if(++c->current_sprite.frameCount >= c->current_sprite.frameDelay) {
     if (c->live){
       if(++c->current_sprite.curFrame >= c->current_sprite.maxFrame){
         c->current_sprite.curFrame = 0;
@@ -111,7 +111,7 @@ void animateCharacter(Character *c){
           c->current_sprite = c->idle;
         }
       } else if (c->current_sprite.curFrame <= 0)
-        c->current_sprite.curFrame = c->current_sprite.maxFrame - 1;      
+        c->current_sprite.curFrame = c->current_sprite.maxFrame - 1;
 
      c->current_sprite.frameCount = 0;
     } else {
@@ -143,18 +143,18 @@ void stopCharacter(Character *c, int key){
     (key == c->leftKey) || (key == c->attack1Key) || (key == c->attack2Key))
     && (!c->current_sprite.limited)){
     c->current_sprite = c->idle;
-    c->dirX = 0;  
-    c->dirY = 0; 
+    c->dirX = 0;
+    c->dirY = 0;
   }
 }
 
 void drawBullet(Character *c){
   if ((c->bullet.ready) && (c->current_sprite.curFrame == c->bullet.releaseFrame)){
-    c->bullet.fired = true;  
+    c->bullet.fired = true;
     c->bullet.ready = false;
   } else if (c->bullet.fired){
     al_draw_bitmap_region(c->bullet.image, 0, 0, c->bullet.heigth, c->bullet.width, c->bullet.x, c->bullet.y, c->bullet.animationDirection);
     if (c->bullet.x >= 900 || c->bullet.x <= -17)
-      c->bullet.fired = false; 
+      c->bullet.fired = false;
   }
 }
