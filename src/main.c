@@ -229,7 +229,7 @@ void mainGame(Character homura, Character mami){
     if (winner != 0)
       isGameOver = true;
 
-    al_draw_bitmap_region(damage_h, 0, 0, ((326 * homura.life)/100)-326, 26, 407, 49, 0);
+    al_draw_bitmap_region(damage_h, 326, 0, (326 * homura.life)/100-325, 26, 407, 49, 0);
     al_draw_bitmap_region(damage_m, 0, 0, 326-(326 * mami.life)/100, 26, 493, 49, 0);
     al_draw_bitmap_region(homura.current_sprite.image, homura.current_sprite.curFrame * homura.current_sprite.width,
         0, homura.current_sprite.width, homura.current_sprite.heigth, homura.x, homura.y, homura.animationDirection);
