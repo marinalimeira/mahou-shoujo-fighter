@@ -13,6 +13,8 @@
 ALLEGRO_DISPLAY *display = NULL;
 ALLEGRO_BITMAP *background = NULL;
 ALLEGRO_BITMAP *header = NULL;
+ALLEGRO_BITMAP *damage_h = NULL;
+ALLEGRO_BITMAP *damage_m = NULL;
 ALLEGRO_EVENT_QUEUE *event_queue = NULL;
 ALLEGRO_TIMER *timer = NULL;
 ALLEGRO_SAMPLE *main_song = NULL;
@@ -88,6 +90,11 @@ void init(){
   arcadeMedium = al_load_ttf_font("fonts/arcadepix.ttf", 50, 0);
   grafitiFont = al_load_ttf_font("fonts/grafiti.ttf", 70, 0);
 
+  damage_h = al_load_bitmap("imgs/damage_h.bmp");
+  al_convert_mask_to_alpha(damage_h, al_map_rgb(0, 255, 38));
+  damage_m = al_load_bitmap("imgs/damage_m.bmp");
+  al_convert_mask_to_alpha(damage_m, al_map_rgb(0, 255, 38));
+
   event_queue = al_create_event_queue();
 
   timer = al_create_timer(1.0 / FPS);
@@ -102,10 +109,9 @@ void init(){
 
 void mainGame(Character homura, Character mami){
   FILE *arq = fopen("scores", "a+");
-  /* if (arq==NULL){ */
-  /* } */
+
   background = al_load_bitmap("imgs/bg.bmp");
-  header = al_load_bitmap("imgs/headerm.bmp");
+  header = al_load_bitmap("imgs/header.bmp");
   al_convert_mask_to_alpha(header, al_map_rgb(0, 255, 38));
 
   Cloud cloud1;
@@ -225,6 +231,8 @@ void mainGame(Character homura, Character mami){
     if (winner != 0)
       isGameOver = true;
 
+    al_draw_bitmap_region(damage_h, 0, 0, ((326 * homura.life)/100)-326, 26, 407, 49, 0);
+    al_draw_bitmap_region(damage_m, 0, 0, 326-(326 * mami.life)/100, 26, 493, 49, 0);
     al_draw_bitmap_region(homura.current_sprite.image, homura.current_sprite.curFrame * homura.current_sprite.width,
         0, homura.current_sprite.width, homura.current_sprite.heigth, homura.x, homura.y, homura.animationDirection);
     al_draw_bitmap_region(mami.current_sprite.image, mami.current_sprite.curFrame * mami.current_sprite.width, 0,
@@ -232,15 +240,9 @@ void mainGame(Character homura, Character mami){
     al_draw_bitmap_region(cloud1.image, 0, 0, 290, 160, cloud1.x, cloud1.y, 0);
     al_draw_bitmap_region(cloud2.image, 0, 0, 238, 140, cloud2.x, cloud2.y, 0);
     al_draw_bitmap_region(cloud3.image, 0, 0, 569, 247, cloud3.x, cloud3.y, 0);
-    char homu_life[5]  = "";
-    sprintf(homu_life, "%d", homura.life);
-    al_draw_text(arcadeSmall, al_map_rgb(74, 20, 140), 120, 10, ALLEGRO_ALIGN_RIGHT, homu_life);
     char tempo_str[5]  = "";
     sprintf(tempo_str, "%d", tempo/20);
     al_draw_text(arcadeSmall, al_map_rgb(255, 255, 255), 473, 30, ALLEGRO_ALIGN_RIGHT, tempo_str);
-    char mami_life[5]  = "";
-    sprintf(mami_life, "%d", mami.life);
-    al_draw_text(arcadeSmall, al_map_rgb(249, 168, 37), 800, 10, ALLEGRO_ALIGN_LEFT, mami_life);
     if (isGameOver) {
       char win_str[]  = "";
       char insertHigh[]  = "PLAYER ";
