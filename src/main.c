@@ -20,7 +20,6 @@ ALLEGRO_TIMER *timer = NULL;
 ALLEGRO_SAMPLE *main_song = NULL;
 ALLEGRO_FONT *arcadeBig = NULL;
 ALLEGRO_FONT *arcadeSmall = NULL;
-ALLEGRO_FONT *arcadeMedium = NULL;
 ALLEGRO_FONT *grafitiFont = NULL;
 ALLEGRO_MOUSE_STATE *state = NULL;
 ALLEGRO_BITMAP *cursor = NULL;
@@ -87,7 +86,6 @@ void init(){
 
   arcadeBig = al_load_ttf_font("fonts/arcadepix.ttf", 60, 0);
   arcadeSmall = al_load_ttf_font("fonts/arcadepix.ttf", 34, 0);
-  arcadeMedium = al_load_ttf_font("fonts/arcadepix.ttf", 50, 0);
   grafitiFont = al_load_ttf_font("fonts/grafiti.ttf", 70, 0);
 
   damage_h = al_load_bitmap("imgs/damage_h.bmp");
@@ -243,21 +241,17 @@ void mainGame(Character homura, Character mami){
     char tempo_str[5]  = "";
     sprintf(tempo_str, "%d", tempo/20);
     al_draw_text(arcadeSmall, al_map_rgb(255, 255, 255), 473, 30, ALLEGRO_ALIGN_RIGHT, tempo_str);
+
     if (isGameOver) {
-      char win_str[]  = "";
-      char insertHigh[]  = "PLAYER ";
-      sprintf(win_str, "%d", winner);
-      strcat(insertHigh, win_str);
-      strcat(insertHigh, " WINS");
-
+      char win_str[]  = "MAMI WINS!";
       ALLEGRO_COLOR color = al_map_rgb(249, 168, 37);
-
       if (winner == 1) {
         color = al_map_rgb(74, 20, 140);
+        strcpy(win_str, "HOMURA WINS!");
       }
 
       al_draw_text(arcadeBig, color, 460, 200, ALLEGRO_ALIGN_CENTER, "GAME OVER");
-      al_draw_text(arcadeBig, color, 450, 270, ALLEGRO_ALIGN_CENTER, insertHigh);
+      al_draw_text(arcadeBig, color, 450, 270, ALLEGRO_ALIGN_CENTER, win_str);
       al_draw_text(arcadeSmall, al_map_rgb(255, 255, 255), 550, 540, ALLEGRO_ALIGN_RIGHT, "Insert Your Name:");
       al_draw_text(arcadeSmall, al_map_rgb(255, 255, 255), 570, 540, ALLEGRO_ALIGN_LEFT, str);
     }
