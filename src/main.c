@@ -220,10 +220,12 @@ void mainGame(Character homura, Character mami){
 
       collideBullet(&homura, &mami);
       collideBullet(&mami, &homura);
+      collideBullet2(&mami, &homura);
     }
 
     drawBullet(&homura);
     drawBullet(&mami);
+    drawBullet2(&mami);
 
     winner = checkEnd(&homura, &mami, tempo);
     if (winner != 0)

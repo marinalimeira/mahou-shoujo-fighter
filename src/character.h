@@ -63,6 +63,7 @@ typedef struct {
   Sprite current_sprite;
 
   Bullet bullet;
+  Bullet bullet2;
 } Character;
 
 typedef struct {

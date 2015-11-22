@@ -77,7 +77,31 @@ void makeMamiAttack1(Character *c){
 }
 
 void makeAttack2(Character *c){
-  c->current_sprite = c->attack2;
+  if (!c->bullet.fired){
+    c->current_sprite = c->attack2;
+
+    if (c->bullet.animationDirection == ALLEGRO_FLIP_HORIZONTAL) {
+      c->bullet.animationDirection = 0;
+      c->bullet.dirX = -1;
+      c->bullet2.animationDirection = 0;
+      c->bullet2.dirX = -1;
+    }
+    if (c->animationDirection == 0){
+      c->bullet.x = c->x + 5;
+      c->bullet2.x = c->x + 5;
+    } else {
+      c->bullet.x = c->x + 100;
+      c->bullet.animationDirection = ALLEGRO_FLIP_HORIZONTAL;
+      c->bullet.dirX = 1;
+      c->bullet2.x = c->x + 100;
+      c->bullet2.animationDirection = ALLEGRO_FLIP_HORIZONTAL;
+      c->bullet2.dirX = 1;
+    }
+    c->bullet.y = c->y + 65;
+    c->bullet2.y = c->y + 65;
+    c->bullet.ready = true;
+    c->bullet2.ready = true;
+  }
 }
 
 void collideBullet(Character *c, Character *e){
@@ -90,6 +114,26 @@ void collideBullet(Character *c, Character *e){
       e->dirX = 0;
       e->dirY = 0;
       e->life -= c->bullet.damage;
+      if (e->life < 0)
+        e->life = 0;
+    }
+  }
+}
+
+void collideBullet2(Character *c, Character *e){
+  if (c->bullet2.fired) {
+    c->bullet2.x += c->bullet2.speed * c->bullet2.dirX;
+    // this checks if direction is 1, bullet is in enemy's area, the same if direction is -1 and then checks y
+    if (((((c->bullet2.dirX == 1) && (c->bullet2.x >= e->x) && (c->x < e->x) &&
+              ((c->bullet2.x <= e->x + e->current_sprite.width))) || ((c->bullet2.dirX == -1)
+              && (c->bullet.x <= e->x + e->current_sprite.width) && (c->x > e->x) &&
+              (c->bullet2.x >= e->x)))) && ((c->bullet2.y >= e->y) &&
+            (c->bullet2.y <= e->current_sprite.heigth + e->y))){
+      c->bullet2.fired = false;
+      e->current_sprite = e->hurt;
+      e->dirX = 0;
+      e->dirY = 0;
+      e->life -= c->bullet2.damage;
       if (e->life < 0)
         e->life = 0;
     }
@@ -157,6 +201,18 @@ void drawBullet(Character *c){
     al_draw_bitmap_region(c->bullet.image, 0, 0, c->bullet.heigth, c->bullet.width, c->bullet.x, c->bullet.y, c->bullet.animationDirection);
     if (c->bullet.x >= 900 || c->bullet.x <= -17)
       c->bullet.fired = false;
+  }
+}
+
+void drawBullet2(Character *c){
+  if ((c->bullet2.ready) && (c->current_sprite.curFrame == c->bullet2.releaseFrame)){
+    c->bullet2.fired = true;
+    c->bullet2.ready = false;
+  } else if (c->bullet2.fired){
+    al_draw_bitmap_region(c->bullet2.image, 0, 0, c->bullet2.heigth, c->bullet2.width,
+        c->bullet2.x, c->bullet2.y, c->bullet2.animationDirection);
+    if (c->bullet2.x >= 900 || c->bullet2.x <= -17)
+      c->bullet2.fired = false;
   }
 }
 

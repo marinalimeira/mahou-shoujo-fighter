@@ -197,6 +197,18 @@ void initializeMami(Character *mami){
   mami->bullet.image = al_load_bitmap("imgs/miscellaneous/mami_bullet.bmp");
   al_convert_mask_to_alpha(mami->bullet.image, al_map_rgb(0, 255, 51));
 
+  mami->bullet2.releaseFrame = 13;
+  mami->bullet2.heigth = 14; 
+  mami->bullet2.width = 5;
+  mami->bullet2.fired = false;
+  mami->bullet2.ready = false;
+  mami->bullet2.speed = 10;
+  mami->bullet2.damage = 5;
+  mami->bullet2.dirX = -1;
+  mami->bullet2.animationDirection = 0;
+  mami->bullet2.image = al_load_bitmap("imgs/miscellaneous/mami_bullet.bmp");
+  al_convert_mask_to_alpha(mami->bullet2.image, al_map_rgb(0, 255, 51));
+
   mami->current_sprite = mami->idle;
 }
 
