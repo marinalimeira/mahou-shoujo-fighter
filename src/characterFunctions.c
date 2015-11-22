@@ -166,24 +166,24 @@ int checkEnd(Character *h, Character *m, int t){
   if (m->live){
     if (m->life <= 0){
       killCharacter(m);
-      win= 2;
+      win = 2;
     }
   }
 
   if (h->live) {
     if (h->life <= 0){
       killCharacter(h);
-      win= 1;
+      win = 1;
     }
   }
 
-  if (t/20 >= 5){
+  if (t/20 <= 0){
     if (h->life > m->life){
       killCharacter(m);
-      win= 1;
+      win = 1;
     } else {
       killCharacter(h);
-      win= 2;
+      win = 2;
     }
   }
 

@@ -16,9 +16,10 @@ ALLEGRO_BITMAP *header = NULL;
 ALLEGRO_EVENT_QUEUE *event_queue = NULL;
 ALLEGRO_TIMER *timer = NULL;
 ALLEGRO_SAMPLE *main_song = NULL;
-ALLEGRO_FONT *arcadeFont = NULL;
+ALLEGRO_FONT *arcadeBig = NULL;
+ALLEGRO_FONT *arcadeSmall = NULL;
+ALLEGRO_FONT *arcadeMedium = NULL;
 ALLEGRO_FONT *grafitiFont = NULL;
-ALLEGRO_FONT *boxy_bold = NULL;
 ALLEGRO_MOUSE_STATE *state = NULL;
 ALLEGRO_BITMAP *cursor = NULL;
 
@@ -82,9 +83,10 @@ void init(){
   al_init_font_addon();
   if (!al_init_ttf_addon() ? printf("Failed to initialize ttf!\n") : 0);
 
-  arcadeFont = al_load_ttf_font("fonts/arcadepix.ttf", 43, 0);
-  grafitiFont = al_load_ttf_font("fonts/grafiti.ttf", 100, 0);
-  boxy_bold = al_load_ttf_font("fonts/boxy_bold.ttf", 100, 0);
+  arcadeBig = al_load_ttf_font("fonts/arcadepix.ttf", 60, 0);
+  arcadeSmall = al_load_ttf_font("fonts/arcadepix.ttf", 34, 0);
+  arcadeMedium = al_load_ttf_font("fonts/arcadepix.ttf", 50, 0);
+  grafitiFont = al_load_ttf_font("fonts/grafiti.ttf", 70, 0);
 
   event_queue = al_create_event_queue();
 
@@ -103,7 +105,7 @@ void mainGame(Character homura, Character mami){
   /* if (arq==NULL){ */
   /* } */
   background = al_load_bitmap("imgs/bg.bmp");
-  header = al_load_bitmap("imgs/header.bmp");
+  header = al_load_bitmap("imgs/headerm.bmp");
   al_convert_mask_to_alpha(header, al_map_rgb(0, 255, 38));
 
   Cloud cloud1;
@@ -118,7 +120,7 @@ void mainGame(Character homura, Character mami){
   int keyPressed = 0;
   bool isGameOver = false;
   int winner = 0;
-  int tempo = 0;
+  int tempo = 1800;
   char str[17];
   strcpy(str, "");
 
@@ -198,13 +200,12 @@ void mainGame(Character homura, Character mami){
           fclose (arq);
           menu(homura, mami);
         }
-        printf("oi");
       }
     }
 
     if(event.type == ALLEGRO_EVENT_TIMER) {
       if (!isGameOver)
-        tempo++;
+        tempo--;
 
       animateCharacter(&homura);
       animateCharacter(&mami);
@@ -233,22 +234,30 @@ void mainGame(Character homura, Character mami){
     al_draw_bitmap_region(cloud3.image, 0, 0, 569, 247, cloud3.x, cloud3.y, 0);
     char homu_life[5]  = "";
     sprintf(homu_life, "%d", homura.life);
-    al_draw_text(grafitiFont, al_map_rgb(74, 20, 140), 120, 10, ALLEGRO_ALIGN_RIGHT, homu_life);
+    al_draw_text(arcadeSmall, al_map_rgb(74, 20, 140), 120, 10, ALLEGRO_ALIGN_RIGHT, homu_life);
     char tempo_str[5]  = "";
     sprintf(tempo_str, "%d", tempo/20);
-    al_draw_text(arcadeFont, al_map_rgb(255, 255, 255), 473, 25, ALLEGRO_ALIGN_RIGHT, tempo_str);
+    al_draw_text(arcadeSmall, al_map_rgb(255, 255, 255), 473, 30, ALLEGRO_ALIGN_RIGHT, tempo_str);
     char mami_life[5]  = "";
     sprintf(mami_life, "%d", mami.life);
-    al_draw_text(grafitiFont, al_map_rgb(249, 168, 37), 800, 10, ALLEGRO_ALIGN_LEFT, mami_life);
+    al_draw_text(arcadeSmall, al_map_rgb(249, 168, 37), 800, 10, ALLEGRO_ALIGN_LEFT, mami_life);
     if (isGameOver) {
       char win_str[]  = "";
-      char insert[]  = "Player ";
+      char insertHigh[]  = "PLAYER ";
       sprintf(win_str, "%d", winner);
-      strcat(insert, win_str);
-      al_draw_text(grafitiFont, al_map_rgb(198, 40, 40), 450, 250, ALLEGRO_ALIGN_CENTER, "GAME OVER");
-      al_draw_text(arcadeFont, al_map_rgb(96, 125, 139), 450, 350, ALLEGRO_ALIGN_CENTER, insert);
-      al_draw_text(arcadeFont, al_map_rgb(96, 125, 139), 450, 470, ALLEGRO_ALIGN_CENTER, "Insert Your Name");
-      al_draw_text(arcadeFont, al_map_rgb(96, 125, 139), 300, 520, ALLEGRO_ALIGN_CENTER, str);
+      strcat(insertHigh, win_str);
+      strcat(insertHigh, " WINS");
+
+      ALLEGRO_COLOR color = al_map_rgb(249, 168, 37);
+
+      if (winner == 1) {
+        color = al_map_rgb(74, 20, 140);
+      }
+
+      al_draw_text(arcadeBig, color, 460, 200, ALLEGRO_ALIGN_CENTER, "GAME OVER");
+      al_draw_text(arcadeBig, color, 450, 270, ALLEGRO_ALIGN_CENTER, insertHigh);
+      al_draw_text(arcadeSmall, al_map_rgb(255, 255, 255), 550, 540, ALLEGRO_ALIGN_RIGHT, "Insert Your Name:");
+      al_draw_text(arcadeSmall, al_map_rgb(255, 255, 255), 570, 540, ALLEGRO_ALIGN_LEFT, str);
     }
     al_flip_display();
     al_draw_bitmap(background, 0, 0, 0);
