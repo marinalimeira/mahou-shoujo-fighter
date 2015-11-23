@@ -272,6 +272,8 @@ int checkEnd(Character *h, Character *m, int t){
     if (h->life > m->life){
       killCharacter(m);
       win = 1;
+    } else if (h->life == m->life){
+      win = 3;
     } else {
       killCharacter(h);
       win = 2;

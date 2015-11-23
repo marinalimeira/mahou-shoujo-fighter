@@ -256,6 +256,9 @@ void mainGame(){
       if (winner == 1) {
         color = al_map_rgb(74, 20, 140);
         strcpy(win_str, "HOMURA WINS!");
+      } else if (winner == 3){
+        color = al_map_rgb(0, 0, 0);
+        strcpy(win_str, "A TIE!");
       }
 
       al_draw_text(arcadeBig, color, 460, 200, ALLEGRO_ALIGN_CENTER, "GAME OVER");
@@ -333,7 +336,6 @@ void menu(){
     }
 
     al_draw_text(grafitiFont, al_map_rgb(255, 255, 255), 450, 160, ALLEGRO_ALIGN_CENTER, "mahou shoujo  fighter");
-
     al_draw_bitmap_region(kyubey.current_sprite.image, kyubey.current_sprite.curFrame * kyubey.current_sprite.width, 0,
         kyubey.current_sprite.width, kyubey.current_sprite.heigth, kyubey.x, kyubey.y, kyubey.animationDirection);
     al_draw_bitmap_region(start.current, 0, 0, 228, 50, 336, 310, 0);
