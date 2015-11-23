@@ -35,19 +35,14 @@ ALLEGRO_BITMAP *cursor = NULL;
 const Character EmptyStruct;
 
 void init();
-void mainGame(Character homura, Character mami);
-void menu(Character homura, Character mami);
+void mainGame();
+void menu();
 
 void main() {
   init();
 
-  Character homura;
-  Character mami;
 
-  initializeHomura(&homura);
-  initializeMami(&mami);
-
-  menu(homura, mami);
+  menu();
 
   al_destroy_sample(main_song);
   al_destroy_event_queue(event_queue);
@@ -105,7 +100,12 @@ void init(){
   al_register_event_source(event_queue, al_get_display_event_source(display));
 }
 
-void mainGame(Character homura, Character mami){
+void mainGame(){
+  Character homura;
+  Character mami;
+
+  initializeHomura(&homura);
+  initializeMami(&mami);
   FILE *arq = fopen("scores", "a+");
 
   background = al_load_bitmap("imgs/bg.bmp");
@@ -267,7 +267,7 @@ void mainGame(Character homura, Character mami){
   al_destroy_display(display);
 }
 
-void menu(Character homura, Character mami){
+void menu(){
   background = al_load_bitmap("imgs/bg-menu.bmp");
 
   Character kyubey;
@@ -308,7 +308,7 @@ void menu(Character homura, Character mami){
         }
       } else if (event.keyboard.keycode == ALLEGRO_KEY_ENTER){
         if (current == 1){
-          mainGame(homura, mami);
+          mainGame();
         }  else if (current == 2){
           al_draw_text(grafitiFont, al_map_rgb(255, 255, 255), 450, 150, ALLEGRO_ALIGN_CENTER, "Scores");
           al_flip_display();
