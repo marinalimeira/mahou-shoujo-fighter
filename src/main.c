@@ -81,7 +81,7 @@ void init(){
 
   arcadeBig = al_load_ttf_font("fonts/arcadepix.ttf", 60, 0);
   arcadeSmall = al_load_ttf_font("fonts/arcadepix.ttf", 34, 0);
-  grafitiFont = al_load_ttf_font("fonts/grafiti.ttf", 70, 0);
+  grafitiFont = al_load_ttf_font("fonts/grafiti.ttf", 50, 0);
 
   damage_h = al_load_bitmap("imgs/damage_h.bmp");
   al_convert_mask_to_alpha(damage_h, al_map_rgb(0, 255, 38));
@@ -280,13 +280,9 @@ void menu(){
   initializeKyubey(&kyubey);
 
   MenuItem start;
-  MenuItem scores;
-  MenuItem settings;
   MenuItem ex1t;
 
   initializeStart(&start);
-  initializeScores(&scores);
-  initializeSettings(&settings);
   initializeExit(&ex1t);
 
   int current = 1;
@@ -301,33 +297,21 @@ void menu(){
 
     if (event.type == ALLEGRO_EVENT_KEY_DOWN) {
       if (event.keyboard.keycode == ALLEGRO_KEY_DOWN){
-        if (current >= 4){
+        if (current >= 2){
           current = 1;
         } else {
           current++;
         }
       } else if (event.keyboard.keycode == ALLEGRO_KEY_UP){
         if (current == 1){
-          current = 4;
+          current = 2;
         } else {
           current--;
         }
       } else if (event.keyboard.keycode == ALLEGRO_KEY_ENTER){
         if (current == 1){
           mainGame();
-        }  else if (current == 2){
-          al_draw_text(grafitiFont, al_map_rgb(255, 255, 255), 450, 150, ALLEGRO_ALIGN_CENTER, "Scores");
-          al_flip_display();
-          al_draw_bitmap(background, 0, 0, 0);
-        } else if (current == 3){
-          while (1){
-            al_draw_text(grafitiFont, al_map_rgb(255, 255, 255), 450, 250, ALLEGRO_ALIGN_CENTER, "Music");
-            al_draw_text(grafitiFont, al_map_rgb(255, 255, 255), 450, 150, ALLEGRO_ALIGN_CENTER, "Change Keys");
-            al_flip_display();
-            al_draw_bitmap(background, 0, 0, 0);
-          }
-        }
-        else if (current == 4){
+        } else if (current == 2){
           break;
         }
       }
@@ -339,16 +323,6 @@ void menu(){
       start.current = start.not_selected;
     }
     if (current == 2){
-      scores.current = scores.selected;
-    } else {
-      scores.current = scores.not_selected;
-    }
-    if (current == 3){
-      settings.current = settings.selected;
-    } else {
-      settings.current = settings.not_selected;
-    }
-    if (current == 4){
       ex1t.current = ex1t.selected;
     } else {
       ex1t.current = ex1t.not_selected;
@@ -358,12 +332,12 @@ void menu(){
       animateCharacter(&kyubey);
     }
 
+    al_draw_text(grafitiFont, al_map_rgb(255, 255, 255), 450, 160, ALLEGRO_ALIGN_CENTER, "mahou shoujo  fighter");
+
     al_draw_bitmap_region(kyubey.current_sprite.image, kyubey.current_sprite.curFrame * kyubey.current_sprite.width, 0,
         kyubey.current_sprite.width, kyubey.current_sprite.heigth, kyubey.x, kyubey.y, kyubey.animationDirection);
-    al_draw_bitmap_region(start.current, 0, 0, 228, 50, 336, 220, 0);
-    al_draw_bitmap_region(scores.current, 0, 0, 258, 50, 321, 300, 0);
-    al_draw_bitmap_region(settings.current, 0, 0, 355, 50, 282, 380, 0);
-    al_draw_bitmap_region(ex1t.current, 0, 0, 172, 50, 364, 460, 0);
+    al_draw_bitmap_region(start.current, 0, 0, 228, 50, 336, 310, 0);
+    al_draw_bitmap_region(ex1t.current, 0, 0, 172, 50, 364, 390, 0);
     al_flip_display();
     al_draw_bitmap(background, 0, 0, 0);
   }
