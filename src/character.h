@@ -32,6 +32,23 @@ typedef struct {
 } Bullet;
 
 typedef struct {
+  float x;
+  float y;
+
+  int heigth;
+  int width;
+
+  int animationDirection;
+
+  int defense;
+  bool active;
+  int active_time;
+  int active_for;
+
+  ALLEGRO_BITMAP *image;
+} Shield;
+
+typedef struct {
 
   int downKey;
   int upKey;
@@ -64,6 +81,10 @@ typedef struct {
 
   Bullet bullet;
   Bullet bullet2;
+
+  Shield shield;
+
+  bool has_shield;
 } Character;
 
 typedef struct {

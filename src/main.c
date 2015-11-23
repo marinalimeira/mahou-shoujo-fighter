@@ -158,7 +158,7 @@ void mainGame(){
           } else if (keyPressed == homura.attack1Key) {
             makeHomuraAttack1(&homura);
           } else if (keyPressed == homura.attack2Key) {
-            makeAttack2(&homura);
+            makeHomuraDefense(&homura);
           }
         }
         if (!mami.current_sprite.limited){
@@ -175,7 +175,7 @@ void mainGame(){
           } else if (keyPressed == mami.attack1Key) {
             makeMamiAttack1(&mami);
           } else if (keyPressed == mami.attack2Key) {
-            makeAttack2(&mami);
+            makeMamiAttack2(&mami);
           }
         }
       } else if(event.type == ALLEGRO_EVENT_KEY_UP){
@@ -221,6 +221,7 @@ void mainGame(){
       collideBullet(&homura, &mami);
       collideBullet(&mami, &homura);
       collideBullet2(&mami, &homura);
+      maintenceShield(&homura);
     }
 
     drawBullet(&homura);
@@ -231,12 +232,17 @@ void mainGame(){
     if (winner != 0)
       isGameOver = true;
 
+
     al_draw_bitmap_region(damage_h, 326, 0, (326 * homura.life)/100-325, 26, 407, 49, 0);
     al_draw_bitmap_region(damage_m, 0, 0, 326-(326 * mami.life)/100, 26, 493, 49, 0);
     al_draw_bitmap_region(homura.current_sprite.image, homura.current_sprite.curFrame * homura.current_sprite.width,
         0, homura.current_sprite.width, homura.current_sprite.heigth, homura.x, homura.y, homura.animationDirection);
     al_draw_bitmap_region(mami.current_sprite.image, mami.current_sprite.curFrame * mami.current_sprite.width, 0,
         mami.current_sprite.width, mami.current_sprite.heigth, mami.x, mami.y, mami.animationDirection);
+    if (homura.shield.active) {
+      al_draw_bitmap_region(homura.shield.image, 0, 0, homura.shield.heigth, homura.shield.width,
+          homura.shield.x, homura.shield.y, homura.animationDirection);
+    }
     al_draw_bitmap_region(cloud1.image, 0, 0, 290, 160, cloud1.x, cloud1.y, 0);
     al_draw_bitmap_region(cloud2.image, 0, 0, 238, 140, cloud2.x, cloud2.y, 0);
     al_draw_bitmap_region(cloud3.image, 0, 0, 569, 247, cloud3.x, cloud3.y, 0);

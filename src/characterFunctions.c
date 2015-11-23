@@ -5,10 +5,12 @@ void moveCharacterRight(Character *c);
 
 void makeHomuraAttack1(Character *c);
 void makeMamiAttack1(Character *c);
-void makeAttack2(Character *c);
+void makeMamiAttack2(Character *c);
+void makeHomuraDefense(Character *c);
 
 void collideBullet(Character *character, Character *enemie);
 void drawBullet(Character *c);
+void maintenceShield(Character *c);
 
 void animateCharacter(Character *c);
 void killCharacter(Character *c);
@@ -76,7 +78,7 @@ void makeMamiAttack1(Character *c){
   }
 }
 
-void makeAttack2(Character *c){
+void makeMamiAttack2(Character *c){
   if (!c->bullet.fired){
     c->current_sprite = c->attack2;
 
@@ -104,11 +106,39 @@ void makeAttack2(Character *c){
   }
 }
 
+void makeHomuraDefense(Character *c){
+  c->shield.active = true;
+  c->shield.active_for = 0;
+  c->shield.x = c->x;
+  c->shield.y = c->y;
+}
+
+void maintenceShield(Character *c){
+  c->shield.active_for++;
+  if (c->shield.active_time <= c->shield.active_for){
+    c->shield.active = false;
+    c->shield.active_for = 0;
+  }
+}
+
 void collideBullet(Character *c, Character *e){
   if (c->bullet.fired) {
     c->bullet.x += c->bullet.speed * c->bullet.dirX;
     // this checks if direction is 1, bullet is in enemy's area, the same if direction is -1 and then checks y
-    if (((((c->bullet.dirX == 1) && (c->bullet.x >= e->x) && (c->x < e->x) && ((c->bullet.x <= e->x + e->current_sprite.width))) || ((c->bullet.dirX == -1) && (c->bullet.x <= e->x + e->current_sprite.width) && (c->x > e->x) && (c->bullet.x >= e->x)))) && ((c->bullet.y >= e->y) && (c->bullet.y <= e->current_sprite.heigth + e->y))){
+    if (e->has_shield){
+      if (e->shield.active){
+        if (((((c->bullet.dirX == 1) && (c->bullet.x >= e->x) && (c->x < e->shield.x) &&
+              ((c->bullet.x <= e->shield.x + e->shield.width))) || ((c->bullet.dirX == -1)
+              && (c->bullet.x <= e->shield.x + e->shield.width) && (c->x > e->shield.x) &&
+              (c->bullet.x >= e->shield.x)))) && ((c->bullet.y >= e->shield.y) && (c->bullet.y <= e->shield.heigth + e->shield.y))){
+           c->bullet.fired = false;
+        }
+      }
+    }
+    if (((((c->bullet.dirX == 1) && (c->bullet.x >= e->x) && (c->x < e->x) &&
+              ((c->bullet.x <= e->x + e->current_sprite.width))) || ((c->bullet.dirX == -1)
+              && (c->bullet.x <= e->x + e->current_sprite.width) && (c->x > e->x) &&
+              (c->bullet.x >= e->x)))) && ((c->bullet.y >= e->y) && (c->bullet.y <= e->current_sprite.heigth + e->y))){
       c->bullet.fired = false;
       e->current_sprite = e->hurt;
       e->dirX = 0;
@@ -123,10 +153,21 @@ void collideBullet(Character *c, Character *e){
 void collideBullet2(Character *c, Character *e){
   if (c->bullet2.fired) {
     c->bullet2.x += c->bullet2.speed * c->bullet2.dirX;
+    if (e->has_shield){
+      if (e->shield.active){
+        if (((((c->bullet2.dirX == 1) && (c->bullet2.x >= e->shield.x) && (c->x < e->shield.x) &&
+              ((c->bullet2.x <= e->shield.x + e->shield.width))) || ((c->bullet2.dirX == -1)
+              && (c->bullet2.x <= e->shield.x + e->shield.width) && (c->x > e->shield.x) &&
+              (c->bullet2.x >= e->shield.x)))) && ((c->bullet2.y >= e->shield.y) &&
+            (c->bullet2.y <= e->shield.heigth + e->shield.y))){
+         c->bullet2.fired = false;
+        }
+      }
+    }
     // this checks if direction is 1, bullet is in enemy's area, the same if direction is -1 and then checks y
     if (((((c->bullet2.dirX == 1) && (c->bullet2.x >= e->x) && (c->x < e->x) &&
               ((c->bullet2.x <= e->x + e->current_sprite.width))) || ((c->bullet2.dirX == -1)
-              && (c->bullet.x <= e->x + e->current_sprite.width) && (c->x > e->x) &&
+              && (c->bullet2.x <= e->x + e->current_sprite.width) && (c->x > e->x) &&
               (c->bullet2.x >= e->x)))) && ((c->bullet2.y >= e->y) &&
             (c->bullet2.y <= e->current_sprite.heigth + e->y))){
       c->bullet2.fired = false;

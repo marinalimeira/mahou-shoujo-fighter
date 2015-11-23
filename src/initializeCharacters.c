@@ -99,6 +99,19 @@ void initializeHomura(Character *homura){
   al_convert_mask_to_alpha(homura->bullet.image, al_map_rgb(0, 255, 38));
 
   homura->current_sprite = homura->idle;
+
+  homura->shield.heigth = 108;
+  homura->shield.width = 222;
+  homura->shield.animationDirection = 0;
+  homura->shield.defense = 5;
+  homura->shield.active = false;
+  homura->shield.active_time = 80;
+  homura->shield.active_for = 0;
+
+  homura->shield.image = al_load_bitmap("imgs/miscellaneous/shield.bmp");
+  al_convert_mask_to_alpha(homura->shield.image, al_map_rgb(0, 255, 38));
+
+  homura->has_shield = true;
 }
 
 void initializeMami(Character *mami){
@@ -210,6 +223,8 @@ void initializeMami(Character *mami){
   al_convert_mask_to_alpha(mami->bullet2.image, al_map_rgb(0, 255, 51));
 
   mami->current_sprite = mami->idle;
+
+  mami->has_shield = false;
 }
 
 void initializeKyubey(Character *kyubey){
