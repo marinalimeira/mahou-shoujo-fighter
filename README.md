@@ -12,3 +12,8 @@ And then,
 ```
 ./bin
 ```
+# Screenshots
+
+![menu](imgs/screenshots/menu.png)
+![game1](imgs/screenshots/game1.png)
+![game2](imgs/screenshots/game2.png)
